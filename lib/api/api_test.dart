@@ -3,8 +3,9 @@ import 'package:pokemon_tcg/pokemon_tcg.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //heres our api key
+  // Heres our api key
   final api = PokemonTcgApi(apiKey: 'edb66ad4-7257-4c7a-ae99-064750a2909e');
+  // Get cards from base et
   final cards = await api.getCardsForSet('base1');
 
   final jsonResponse =
@@ -21,6 +22,7 @@ void main() async {
       }).toList();
 
   print("Full JSON response: $jsonResponse");
+
   runApp(const MyApp());
 }
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Holo',
       home: Scaffold(
         appBar: AppBar(title: const Text('Holo Pokemon TCG fetch test')),
-        body: const Center(child: Text('api response in console')),
+        body: const Center(child: Text('API response in console')),
       ),
     );
   }
