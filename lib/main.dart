@@ -25,6 +25,7 @@ final GoRouter _router = GoRouter(
       routes: [
         GoRoute(path: '/', builder: (context, state) => HomePage()),
         GoRoute(path: '/collections', builder: (context, state) => CollectionsPage()), 
+        GoRoute(path: '/search', builder: (context, state) => SearchPage()),
         GoRoute(path: '/notifications', builder: (context, state) => NotificationsPage()),
         GoRoute(path: '/account', builder: (context, state) => AccountPage()),
       ],
@@ -57,9 +58,12 @@ class NavBar extends StatelessWidget {
               context.go('/collections');
               break;
             case 2:
-              context.go('/notifications');
+              context.go('/search');
               break;
             case 3:
+              context.go('/notifications');
+              break;
+            case 4:
               context.go('/account');
               break;
           }
@@ -69,6 +73,7 @@ class NavBar extends StatelessWidget {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'Collections'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
         ],
@@ -80,8 +85,9 @@ class NavBar extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
     if (location == '/')              return 0;
     if (location == '/collections')   return 1;
-    if (location == '/notifications') return 2;
-    if (location == '/account')       return 3;
+    if (location == '/search')        return 2;
+    if (location == '/notifications') return 3;
+    if (location == '/account')       return 4;
     return 0;
   }
 }
@@ -97,6 +103,13 @@ class CollectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(child: Text('Collections Page', style: TextStyle(fontSize: 24)));
+  }
+}
+
+class SearchPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text('Search Page', style: TextStyle(fontSize: 24)));
   }
 }
 
