@@ -18,6 +18,7 @@ void main() async {
           "types": card.types,
           "set": {"id": card.set.id, "name": card.set.name},
           "images": {"small": card.images.small, "large": card.images.large},
+          "cardmarket": card.tcgPlayer
         };
       }).toList();
 
