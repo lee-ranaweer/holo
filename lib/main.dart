@@ -8,9 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'Navbar',
-    );
+    return MaterialApp.router(routerConfig: router, title: 'Navbar');
   }
 }
