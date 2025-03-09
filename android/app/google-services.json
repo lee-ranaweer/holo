@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "508342142554",
+    "project_id": "holo-35482",
+    "storage_bucket": "holo-35482.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508342142554:android:a1792ac9351e1e300d3a63",
+        "android_client_info": {
+          "package_name": "com.example.holo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbEfqZFpgdcGr9w3MZfG7eAmPnwENpDs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

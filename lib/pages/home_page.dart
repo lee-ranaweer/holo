@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/auth_service.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
+  const HomePage({super.key}); 
+  
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authStateProvider).value!;
+
     return Scaffold(
-      backgroundColor: Colors.black, // Sleek dark mode background (very cool)
+      backgroundColor: Colors.black, 
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -15,7 +21,7 @@ class HomePage extends StatelessWidget {
                 vertical: 12.0,
               ),
               child: Text(
-                'Hello, Justin',
+                user.email!,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,

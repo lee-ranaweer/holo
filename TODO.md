@@ -1,0 +1,4 @@
+- Add cards to account
+- Filter cards in search
+- View portfolio details
+- Set custom notifications
