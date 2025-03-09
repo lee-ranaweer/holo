@@ -114,7 +114,9 @@ class _SearchPageState extends State<SearchPage> {
                     const SizedBox(width: 8),
                     FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Container(
+                      child: GestureDetector(
+                        onTap: () => _showFilter(context),
+                        child: Container(
                           padding: const EdgeInsets.all(10.0),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -133,6 +135,7 @@ class _SearchPageState extends State<SearchPage> {
                             color: Colors.white,
                           ),
                         ),
+                      ),
                     )
                   ]
                 ),
@@ -219,6 +222,102 @@ class _SearchPageState extends State<SearchPage> {
         style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
       ),
       onTap: () => _showCardDetails(context, card),
+    );
+  }
+
+  void _showFilter(BuildContext context) {
+    const List<String> setlist = <String>['Base', 'Jungle', 'Fossil'];
+    const List<String> rarlist = <String>['Common', 'Uncommon', 'Rare'];
+    String dropdownValue1 = setlist.first;
+    String dropdownValue2 = rarlist.first;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.3,
+              maxWidth: MediaQuery.of(context).size.width * 0.5,
+            ),
+            padding: const EdgeInsets.all(40.0),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.4),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "Filter By",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  overflow:
+                      TextOverflow
+                          .ellipsis, // Prevents long names from breaking layout
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Set",
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 14,
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: dropdownValue1,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.white),
+                  dropdownColor: Colors.grey.shade900,
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue1 = value!;
+                    });
+                  },
+                  items: 
+                    setlist.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(value: value, child: Text(value));
+                    }).toList(),
+                ),
+                Text(
+                  "Rarity",
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 14,
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: dropdownValue2,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.white),
+                  dropdownColor: Colors.grey.shade900,
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue2 = value!;
+                    });
+                  },
+                  items: 
+                    rarlist.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(value: value, child: Text(value));
+                    }).toList(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
