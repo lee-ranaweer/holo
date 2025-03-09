@@ -12,10 +12,12 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _cards = [];
   bool _isLoading = false;
+  bool _search = false;
   String _errorMessage = '';
 
   Future<void> _searchCards(String query) async {
     if (query.isEmpty) return;
+    _search = true;
 
     setState(() {
       _isLoading = true;
@@ -106,13 +108,6 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
 
-            // Loading Indicator
-            if (_isLoading)
-              const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: CircularProgressIndicator(),
-              ),
-
             // Error Message
             if (_errorMessage.isNotEmpty)
               Padding(
@@ -126,23 +121,48 @@ class _SearchPageState extends State<SearchPage> {
             // Search Results
             Expanded(
               child:
-                  _cards.isEmpty
-                      ? Center(
-                        child: Text(
-                          'Search for a Pokémon card',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      )
-                      : ListView.builder(
-                        itemCount: _cards.length,
-                        itemBuilder: (context, index) {
-                          final card = _cards[index];
-                          return _buildCardItem(context, card);
-                        },
+                // Search Cards
+                _cards.isEmpty && !_search && !_isLoading ?
+                  Center(
+                    child: Text(
+                      'Search for a Pokémon card',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 16,
                       ),
+                    ),
+                  )
+                : 
+                // No Cards
+                _cards.isEmpty && _search && !_isLoading ?
+                  Center(
+                    child: Text(
+                      'No cards found',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+                  :
+                // Card List
+                !_isLoading ?
+                  ListView.builder(
+                    itemCount: _cards.length,
+                    itemBuilder: (context, index) {
+                      final card = _cards[index];
+                      return _buildCardItem(context, card);
+                    },
+                  )
+                :
+                // Loading Indicator
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
             ),
           ],
         ),
