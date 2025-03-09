@@ -80,32 +80,62 @@ class _SearchPageState extends State<SearchPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
                 vertical: 12.0,
               ),
-              child: TextField(
-                style: const TextStyle(color: Colors.white),
-                cursorColor: Colors.white,
-                onSubmitted: _searchCards,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.grey.shade900,
-                  hintText: 'Search Pokémon Cards...',
-                  hintStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: const Icon(Icons.search, color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 12.0,
-                    horizontal: 16.0,
-                  ),
+              child: 
+                Row(
+                  children: [
+                    // Search Bar
+                    Expanded(
+                        child: TextField(
+                        style: const TextStyle(color: Colors.white),
+                        cursorColor: Colors.white,
+                        onSubmitted: _searchCards,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade900,
+                          hintText: 'Search Pokémon Cards...',
+                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          prefixIcon: const Icon(Icons.search, color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12.0,
+                            horizontal: 16.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Container(
+                          padding: const EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade900,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.2),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.filter_alt_outlined,
+                            size: 28,
+                            color: Colors.white,
+                          ),
+                        ),
+                    )
+                  ]
                 ),
-              ),
             ),
 
             // Error Message
@@ -185,7 +215,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       subtitle: Text(
-        'HP: ${card['hp'] ?? 'N/A'} | ${card['rarity'] ?? 'Unknown'}',
+        '${card['set']['name'] ?? 'Unknown'} | ${card['rarity'] ?? 'Unknown'}',
         style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
       ),
       onTap: () => _showCardDetails(context, card),

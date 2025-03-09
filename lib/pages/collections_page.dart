@@ -36,14 +36,15 @@ class CollectionsPage extends StatelessWidget {
                 vertical: 8.0,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildButton(context, 'Filter', Icons.filter_list, () {
                     // TODO: Add filter functionality.
                   }),
+                  SizedBox(width: 20),
                   _buildButton(context, 'Market', Icons.trending_up, () {
                     // TODO: Add rec functionality.
                   }),
+                  Spacer(),
                   // Plus button for adding cards
                   GestureDetector(
                     onTap: () {
