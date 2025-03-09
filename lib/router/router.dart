@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/navbar.dart';
+import '../navbar/navbar.dart';
 import '../pages/home_page.dart';
 import '../pages/login_page.dart';
 import '../pages/signup_page.dart';

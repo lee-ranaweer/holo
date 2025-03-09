@@ -2,33 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CollectionsPage extends StatelessWidget {
-  const CollectionsPage({Key? key}) : super(key: key);
+  const CollectionsPage({super.key}); 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Sleek dark mode background
+      appBar: AppBar(title: Text('My Collection')),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Title: "My Collection"
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
-              child: Text(
-                'My Collection',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-
             // Navbar-like row with 3 buttons: Filter, Rec, and a circular + button.
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -48,7 +31,7 @@ class CollectionsPage extends StatelessWidget {
                   // Plus button for adding cards
                   GestureDetector(
                     onTap: () {
-                      context.push('/search');
+                      context.go('/search');
                     },
                     child: Container(
                       padding: const EdgeInsets.all(14.0),
