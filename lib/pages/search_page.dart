@@ -38,7 +38,10 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<List<Map<String, dynamic>>> fetchPokemonCards(String name) async {
     final apiKey = 'edb66ad4-7257-4c7a-ae99-064750a2909e'; // Your API Key
+    name = name.trim().replaceAll(' ', '&');
+    name = name.replaceAll('’', '%27');
     final url = Uri.parse('https://api.pokemontcg.io/v2/cards?q=name:$name*');
+    print(url);
 
     final response = await http.get(url, headers: {'X-Api-Key': apiKey});
 
