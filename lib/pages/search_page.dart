@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/watchlist_provider.dart';
 import '../services/auth_service.dart';
 
 class SearchPage extends StatefulWidget {
@@ -437,7 +436,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 const SizedBox(height: 12),
 
-                // Add to Watchlist Button
+                // Add to collection
                 Consumer(
                   builder: (context, ref, child) {
                     return ElevatedButton(

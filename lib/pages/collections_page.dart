@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/auth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CollectionsPage extends StatelessWidget {
+class CollectionsPage extends ConsumerWidget  {
   const CollectionsPage({super.key}); 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final collectionAsync = ref.watch(collectionProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -76,19 +80,66 @@ class CollectionsPage extends StatelessWidget {
 
             // Empty collection placeholder
             Expanded(
-              child: Center(
-                child: Text(
-                  'No cards added yet.',
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                    letterSpacing: 0.5,
-                  ),
-                ),
+              child: collectionAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, _) => Center(child: Text('Error: $error')),
+                data: (cards) => _buildCollectionList(cards),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+    Widget _buildCollectionList(List<Map<String, dynamic>> cards) {
+    if (cards.isEmpty) {
+      return Center(
+        child: Text(
+          'No cards added yet.',
+          style: TextStyle(
+            color: Colors.grey.shade500,
+            fontSize: 16,
+          ),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: cards.length,
+      itemBuilder: (context, index) {
+        final card = cards[index];
+        return _buildCollectionCard(card);
+      },
+    );
+  }
+
+  Widget _buildCollectionCard(Map<String, dynamic> card) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12.0),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade900,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(12.0),
+        leading: Image.network(card['images']['small'], width: 60, height: 60),
+        title: Text(
+          card['name'],
+          style: const TextStyle(color: Colors.white),
+        ),
+        subtitle: Text(
+          card['set']['name'],
+          style: TextStyle(color: Colors.grey.shade500),
+        ),
+        trailing: Text(
+          '\$${card['price']}',
+          style: const TextStyle(
+            color: Colors.green,
+            fontSize: 16,
+            fontWeight: FontWeight.bold
+          ),
         ),
       ),
     );
