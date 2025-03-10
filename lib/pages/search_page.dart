@@ -41,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
           addCard = false;
         }
         if (_rarFilter != null && _rarFilter != "None" && 
-          card['rarity'] == null || card['rarity'] != _rarFilter)
+          (card['rarity'] == null || card['rarity'] != _rarFilter))
         {
           addCard = false;
         }
@@ -258,8 +258,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _showFilter(BuildContext context) {
-    const List<String> setlist = <String>['None', 'Base', 'Jungle', 'Fossil'];
-    const List<String> rarlist = <String>['None', 'Common', 'Uncommon', 'Rare'];
+    const List<String> setlist = <String>['None', 'Base', 'Neo', 'Ruby & Sapphire', 'Diamond & Pearl'];
+    const List<String> rarlist = <String>['None', 'Common', 'Uncommon', 'Rare', 'Rare Holo'];
     var setFil = _setFilter ?? setlist.first;
     var rarFil = _rarFilter ?? rarlist.first;
 
