@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/watchlist_provider.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key}); 
+  const SearchPage({super.key});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -85,60 +87,62 @@ class _SearchPageState extends State<SearchPage> {
                 horizontal: 16.0,
                 vertical: 12.0,
               ),
-              child: 
-                Row(
-                  children: [
-                    // Search Bar
-                    Expanded(
-                        child: TextField(
-                        style: const TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
-                        onSubmitted: _searchCards,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade900,
-                          hintText: 'Search Pokémon Cards...',
-                          hintStyle: TextStyle(color: Colors.grey.shade600),
-                          prefixIcon: const Icon(Icons.search, color: Colors.white),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 16.0,
-                          ),
+              child: Row(
+                children: [
+                  // Search Bar
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(color: Colors.white),
+                      cursorColor: Colors.white,
+                      onSubmitted: _searchCards,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey.shade900,
+                        hintText: 'Search Pokémon Cards...',
+                        hintStyle: TextStyle(color: Colors.grey.shade600),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 16.0,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: GestureDetector(
-                        onTap: () => _showFilter(context),
-                        child: Container(
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.shade900,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.2),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.filter_alt_outlined,
-                            size: 28,
-                            color: Colors.white,
-                          ),
+                  ),
+                  const SizedBox(width: 8),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: GestureDetector(
+                      onTap: () => _showFilter(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey.shade900,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.2),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.filter_alt_outlined,
+                          size: 28,
+                          color: Colors.white,
                         ),
                       ),
-                    )
-                  ]
-                ),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             // Error Message
@@ -154,48 +158,48 @@ class _SearchPageState extends State<SearchPage> {
             // Search Results
             Expanded(
               child:
-                // Search Cards
-                _cards.isEmpty && !_search && !_isLoading ?
-                  Center(
-                    child: Text(
-                      'Search for a Pokémon card',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 16,
+                  // Search Cards
+                  _cards.isEmpty && !_search && !_isLoading
+                      ? Center(
+                        child: Text(
+                          'Search for a Pokémon card',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                      :
+                      // No Cards
+                      _cards.isEmpty && _search && !_isLoading
+                      ? Center(
+                        child: Text(
+                          'No cards found',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                      :
+                      // Card List
+                      !_isLoading
+                      ? ListView.builder(
+                        itemCount: _cards.length,
+                        itemBuilder: (context, index) {
+                          final card = _cards[index];
+                          return _buildCardItem(context, card);
+                        },
+                      )
+                      :
+                      // Loading Indicator
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                  )
-                : 
-                // No Cards
-                _cards.isEmpty && _search && !_isLoading ?
-                  Center(
-                    child: Text(
-                      'No cards found',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 16,
-                      ),
-                    ),
-                  )
-                  :
-                // Card List
-                !_isLoading ?
-                  ListView.builder(
-                    itemCount: _cards.length,
-                    itemBuilder: (context, index) {
-                      final card = _cards[index];
-                      return _buildCardItem(context, card);
-                    },
-                  )
-                :
-                // Loading Indicator
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: const Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
             ),
           ],
         ),
@@ -269,10 +273,7 @@ class _SearchPageState extends State<SearchPage> {
                 const SizedBox(height: 8),
                 Text(
                   "Set",
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
                 DropdownButton<String>(
                   value: dropdownValue1,
@@ -285,17 +286,17 @@ class _SearchPageState extends State<SearchPage> {
                       dropdownValue1 = value!;
                     });
                   },
-                  items: 
-                    setlist.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(value: value, child: Text(value));
-                    }).toList(),
+                  items:
+                      setlist.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                 ),
                 Text(
                   "Rarity",
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
                 DropdownButton<String>(
                   value: dropdownValue2,
@@ -308,10 +309,13 @@ class _SearchPageState extends State<SearchPage> {
                       dropdownValue2 = value!;
                     });
                   },
-                  items: 
-                    rarlist.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(value: value, child: Text(value));
-                    }).toList(),
+                  items:
+                      rarlist.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                 ),
               ],
             ),
@@ -328,10 +332,6 @@ class _SearchPageState extends State<SearchPage> {
         return Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.9,
-              maxWidth: MediaQuery.of(context).size.width * 0.95,
-            ),
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.grey.shade900,
@@ -344,110 +344,72 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ],
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Card Image
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.network(
-                      card['images']['large'],
-                      fit: BoxFit.contain,
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Card Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    card['images']['large'],
+                    fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 12),
+                ),
+                const SizedBox(height: 12),
 
-                  // Title & Price Section (FIXED)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Card Name & Set - Wrapped in Expanded to prevent overflow
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              card['name'],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              overflow:
-                                  TextOverflow
-                                      .ellipsis, // Prevents long names from breaking layout
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              card['set']['name'],
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Price Section - Wrapped in Flexible to avoid breaking layout
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            const Icon(
-                              Icons.arrow_upward,
-                              color: Colors.green,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 4),
-                            FittedBox(
-                              fit:
-                                  BoxFit
-                                      .scaleDown, // Ensures the text does not overflow
-                              child: Text(
-                                card['price'] != "N/A"
-                                    ? "\$${card['price']}"
-                                    : "N/A",
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                // Title & Price
+                Text(
+                  card['name'],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(height: 12),
-
-                  // "Add to Collection" Button
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Card added to collection'),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text('Add to Collection'),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "\$${card['price'] != "N/A" ? card['price'] : "N/A"}",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 12),
+
+                // Add to Watchlist Button
+                Consumer(
+                  builder: (context, ref, child) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        ref
+                            .read(watchlistProvider.notifier)
+                            .addToWatchlist(
+                              WatchlistItem(
+                                id: card['id'],
+                                name: card['name'],
+                                imageUrl: card['images']['small'],
+                                price:
+                                    double.tryParse(card['price'] ?? "0") ??
+                                    0.0,
+                                trendUp:
+                                    (double.tryParse(card['price'] ?? "0") ??
+                                        0) >
+                                    100, // Example logic
+                              ),
+                            );
+
+                        Navigator.pop(context); // Close the dialog
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Added to watchlist!')),
+                        );
+                      },
+                      child: const Text("Add to Watchlist"),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         );
