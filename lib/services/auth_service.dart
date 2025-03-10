@@ -5,10 +5,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // Access point for authentication methods
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 
-
 // Keeps track of user authentication state
 final authStateProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
+});
+
+// Watches user Firestore data for updates
+final userProfileProvider = StreamProvider.autoDispose((ref) {
+  final user = ref.watch(authStateProvider).value;
+  if (user == null) return const Stream.empty();
+
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .snapshots()
+      .map((snap) => snap.data());
 });
 
 
@@ -50,4 +61,5 @@ class AuthService {
   Future<void> signOut() async {
     await _auth.signOut();
   }
+  
 }
