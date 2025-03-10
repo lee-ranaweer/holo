@@ -16,6 +16,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _cards = [];
   bool _isLoading = false;
   bool _search = false;
+  var _setFilter, _rarFilter;
   String _errorMessage = '';
 
   Future<void> _searchCards(String query) async {
@@ -233,8 +234,6 @@ class _SearchPageState extends State<SearchPage> {
   void _showFilter(BuildContext context) {
     const List<String> setlist = <String>['Base', 'Jungle', 'Fossil'];
     const List<String> rarlist = <String>['Common', 'Uncommon', 'Rare'];
-    String dropdownValue1 = setlist.first;
-    String dropdownValue2 = rarlist.first;
 
     showDialog(
       context: context,
@@ -243,7 +242,7 @@ class _SearchPageState extends State<SearchPage> {
           backgroundColor: Colors.transparent,
           child: Container(
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.3,
+              maxHeight: MediaQuery.of(context).size.height * 0.32,
               maxWidth: MediaQuery.of(context).size.width * 0.5,
             ),
             padding: const EdgeInsets.all(16.0),
@@ -276,50 +275,78 @@ class _SearchPageState extends State<SearchPage> {
                 const SizedBox(height: 8),
                 Text(
                   "Set",
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 14,
+                  ),
                 ),
-                DropdownButton<String>(
-                  value: dropdownValue1,
-                  icon: const Icon(Icons.arrow_drop_down),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.white),
-                  dropdownColor: Colors.grey.shade900,
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue1 = value!;
-                      print(dropdownValue1);
-                    });
-                  },
-                  items:
-                      setlist.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                StatefulBuilder(
+                  builder: (context, state) {
+                    return DropdownButton<String>(
+                      value: _setFilter,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      elevation: 16,
+                      style: const TextStyle(color: Colors.white),
+                      dropdownColor: Colors.grey.shade900,
+                      isExpanded: true,
+                      onChanged: (String? value) {
+                        state(() {
+                          _setFilter = value!;
+                        });
+                      },
+                      items: 
+                        setlist.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(value: value, child: Text(value));
+                        }).toList(),
+                    );
+                  }
                 ),
                 Text(
                   "Rarity",
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 14,
+                  ),
                 ),
-                DropdownButton<String>(
-                  value: dropdownValue2,
-                  icon: const Icon(Icons.arrow_drop_down),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.white),
-                  dropdownColor: Colors.grey.shade900,
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue2 = value!;
-                    });
+                StatefulBuilder(
+                  builder: (context, state) {
+                    return DropdownButton<String>(
+                      value: _rarFilter,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      elevation: 16,
+                      style: const TextStyle(color: Colors.white),
+                      dropdownColor: Colors.grey.shade900,
+                      isExpanded: true,
+                      onChanged: (String? value) {
+                        state(() {
+                          _rarFilter = value!;
+                        });
+                      },
+                      items: 
+                        rarlist.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(value: value, child: Text(value));
+                        }).toList(),
+                    );
+                  }
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    print('apply filter');
                   },
-                  items:
-                      rarlist.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 6,
+                    ),
+                  ),
+                  child: const Text('Apply'),
                 ),
               ],
             ),
