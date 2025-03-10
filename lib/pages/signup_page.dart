@@ -11,6 +11,7 @@ class SignUpPage extends ConsumerStatefulWidget {
 class _SignUpPageState extends ConsumerState<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   bool _isLoading = false;
 
   Future<void> _signUp() async {
@@ -21,6 +22,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       await ref.read(authServiceProvider).signUp(
         email: _emailController.text,
         password: _passwordController.text,
+        username: _usernameController.text, 
       );
 
       if (mounted) {
@@ -49,6 +51,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                labelText: "Username",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(

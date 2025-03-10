@@ -7,10 +7,19 @@ class AccountPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authStateProvider).value!;
+    final userProfile = ref.watch(userProfileProvider);
+    final currentUser = ref.watch(authStateProvider).value!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(user.email!)),
+      appBar: AppBar(
+        title: Text(
+        userProfile.when(
+            data: (data) => 'Logged in as ${data?['username'] ?? currentUser.email!}',
+            loading: () => 'Logged in as ${currentUser.email ?? 'Loading...'}',
+            error: (_, __) => 'Logged in as ${currentUser.email ?? 'Error'}',
+          ),
+        ),
+      ),
         body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
