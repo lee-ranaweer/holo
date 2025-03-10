@@ -7,11 +7,22 @@ class CollectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('My Collection')),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                "My Collection",
+                style: const TextStyle(
+                  fontSize: 28,
+                  color: Colors.white,
+                  letterSpacing: 1.2,
+                ),
+              ),
+            ),
+
             // Navbar-like row with 3 buttons: Filter, Rec, and a circular + button.
             Padding(
               padding: const EdgeInsets.symmetric(
