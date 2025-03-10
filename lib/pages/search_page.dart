@@ -246,7 +246,7 @@ class _SearchPageState extends State<SearchPage> {
               maxHeight: MediaQuery.of(context).size.height * 0.3,
               maxWidth: MediaQuery.of(context).size.width * 0.5,
             ),
-            padding: const EdgeInsets.all(40.0),
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.grey.shade900,
               borderRadius: BorderRadius.circular(16.0),
@@ -259,6 +259,7 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   "Filter By",
@@ -267,6 +268,7 @@ class _SearchPageState extends State<SearchPage> {
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
+                  textAlign: TextAlign.center,
                   overflow:
                       TextOverflow
                           .ellipsis, // Prevents long names from breaking layout
@@ -285,6 +287,7 @@ class _SearchPageState extends State<SearchPage> {
                   onChanged: (String? value) {
                     setState(() {
                       dropdownValue1 = value!;
+                      print(dropdownValue1);
                     });
                   },
                   items:
