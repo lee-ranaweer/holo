@@ -22,6 +22,38 @@ final userProfileProvider = StreamProvider.autoDispose((ref) {
       .map((snap) => snap.data());
 });
 
+final collectionServiceProvider = Provider<CollectionService>((ref) {
+  return CollectionService();
+});
+
+class CollectionService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Add card to user's collection
+  Future<void> addCard(Map<String, dynamic> card) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('Not authenticated');
+    
+    await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('cards')
+        .doc(card['id'])
+        .set(card);
+  }
+
+  // Stream of user's collected cards
+  Stream<QuerySnapshot> get userCards {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('Not authenticated');
+    
+    return _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('cards')
+        .snapshots();
+  }
+}
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

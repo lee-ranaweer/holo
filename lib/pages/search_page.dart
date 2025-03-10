@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/watchlist_provider.dart';
+import '../services/auth_service.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -382,30 +383,21 @@ class _SearchPageState extends State<SearchPage> {
                 Consumer(
                   builder: (context, ref, child) {
                     return ElevatedButton(
-                      onPressed: () {
-                        ref
-                            .read(watchlistProvider.notifier)
-                            .addToWatchlist(
-                              WatchlistItem(
-                                id: card['id'],
-                                name: card['name'],
-                                imageUrl: card['images']['small'],
-                                price:
-                                    double.tryParse(card['price'] ?? "0") ??
-                                    0.0,
-                                trendUp:
-                                    (double.tryParse(card['price'] ?? "0") ??
-                                        0) >
-                                    100, // Example logic
-                              ),
+                        onPressed: () async {
+                          try {
+                            final collectionService = ref.read(collectionServiceProvider);
+                            await collectionService.addCard(card);
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Card added to collection!')),
                             );
-
-                        Navigator.pop(context); // Close the dialog
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Added to watchlist!')),
-                        );
-                      },
-                      child: const Text("Add to Watchlist"),
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: ${e.toString()}')),
+                            );
+                          }
+                        },
+                      child: const Text("Add to Collection"),
                     );
                   },
                 ),

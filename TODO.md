@@ -1,4 +1,5 @@
 - Add cards to account
 - Filter cards in search
 - View portfolio details
+- Organize collection into decks
 - Set custom notifications
