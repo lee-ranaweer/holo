@@ -29,9 +29,35 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      final cards = await fetchPokemonCards(query);
+      final fetchedCards = await fetchPokemonCards(query);
+
+      // apply filter
+      List<Map<String, dynamic>> filteredCards = [];
+      for (var card in fetchedCards) {
+        bool addCard = true;
+        if (_setFilter != null && _setFilter != "None" &&
+          (card['set']['name'] == null || !card['set']['name'].toString().contains(_setFilter.toString())))
+        {
+          addCard = false;
+        }
+        if (_rarFilter != null && _rarFilter != "None" && 
+          card['rarity'] == null || card['rarity'] != _rarFilter)
+        {
+          addCard = false;
+        }
+        if (addCard) {
+          filteredCards.add(card);
+        }
+      }
+
       setState(() {
-        _cards = cards;
+        if ((_setFilter != null && _setFilter != "None") ||
+          (_rarFilter != null && _rarFilter != "None")) {
+          _cards = filteredCards;
+        }
+        else {
+          _cards = fetchedCards;
+        }
         _isLoading = false;
       });
     } catch (e) {
@@ -232,8 +258,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _showFilter(BuildContext context) {
-    const List<String> setlist = <String>['Base', 'Jungle', 'Fossil'];
-    const List<String> rarlist = <String>['Common', 'Uncommon', 'Rare'];
+    const List<String> setlist = <String>['None', 'Base', 'Jungle', 'Fossil'];
+    const List<String> rarlist = <String>['None', 'Common', 'Uncommon', 'Rare'];
+    var setFil = _setFilter ?? setlist.first;
+    var rarFil = _rarFilter ?? rarlist.first;
 
     showDialog(
       context: context,
@@ -283,7 +311,7 @@ class _SearchPageState extends State<SearchPage> {
                 StatefulBuilder(
                   builder: (context, state) {
                     return DropdownButton<String>(
-                      value: _setFilter,
+                      value: setFil,
                       icon: const Icon(Icons.arrow_drop_down),
                       elevation: 16,
                       style: const TextStyle(color: Colors.white),
@@ -291,7 +319,7 @@ class _SearchPageState extends State<SearchPage> {
                       isExpanded: true,
                       onChanged: (String? value) {
                         state(() {
-                          _setFilter = value!;
+                          setFil = value!;
                         });
                       },
                       items: 
@@ -311,7 +339,7 @@ class _SearchPageState extends State<SearchPage> {
                 StatefulBuilder(
                   builder: (context, state) {
                     return DropdownButton<String>(
-                      value: _rarFilter,
+                      value: rarFil,
                       icon: const Icon(Icons.arrow_drop_down),
                       elevation: 16,
                       style: const TextStyle(color: Colors.white),
@@ -319,7 +347,7 @@ class _SearchPageState extends State<SearchPage> {
                       isExpanded: true,
                       onChanged: (String? value) {
                         state(() {
-                          _rarFilter = value!;
+                          rarFil = value!;
                         });
                       },
                       items: 
@@ -333,7 +361,8 @@ class _SearchPageState extends State<SearchPage> {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    print('apply filter');
+                    _setFilter = setFil;
+                    _rarFilter = rarFil;
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
