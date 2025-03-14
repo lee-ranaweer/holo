@@ -131,12 +131,12 @@ class CollectionsPage extends ConsumerWidget  {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
+              child: Text(
                 "My Collection",
                 style: const TextStyle(
                   fontSize: 28,
+                  fontWeight: FontWeight.w600,
                   color: Colors.white,
-                  letterSpacing: 1.2,
                 ),
               ),
             ),

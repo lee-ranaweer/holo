@@ -11,47 +11,87 @@ class AccountPage extends ConsumerWidget {
     final currentUser = ref.watch(authStateProvider).value!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-        userProfile.when(
-            data: (data) => 'Logged in as ${data?['username'] ?? currentUser.email!}',
-            loading: () => 'Logged in as ${currentUser.email ?? 'Loading...'}',
-            error: (_, __) => 'Logged in as ${currentUser.email ?? 'Error'}',
-          ),
-        ),
-      ),
         body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sign Out Button
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 32.0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await ref.read(authServiceProvider).signOut();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16
-                      ),
-                    ),
-                    child: const Text(
-                      'Sign Out',
+            // top bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Stack(
+                children: [
+                  // Title
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Profile',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                ),
+                  // Sign Out Button
+                  Container(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                      onPressed: () async {
+                        await ref.read(authServiceProvider).signOut();
+                      },
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
+            ),
+            const SizedBox(height: 24),
+            // Profile
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundColor: Colors.grey.shade800,
+                    child: const Icon(
+                      Icons.person,
+                      size: 30,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    userProfile.when(
+                      data: (data) => data?['username'] ?? currentUser.email!,
+                      loading: () => currentUser.email ?? 'Loading...',
+                      error: (_, __) => currentUser.email ?? 'Error',
+                    ),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    currentUser.email!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                ],
+              )
             ),
           ],
         ),
