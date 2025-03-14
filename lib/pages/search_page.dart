@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/card_widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/auth_service.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -353,6 +356,97 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   child: const Text('Apply'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCardDetails(BuildContext context, Map<String, dynamic> card) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.4),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Card Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    card['images']['large'],
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Title & Price
+                Text(
+                  card['name'],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "\$${card['price'] != "N/A" ? card['price'] : "N/A"}",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Add to collection
+                Consumer(
+                  builder: (context, ref, child) {
+                    return ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            final collectionService = ref.read(collectionServiceProvider);
+                            await collectionService.addCard(card);
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(this.context).showSnackBar(
+                              SnackBar(
+                                content: Text('Card added to collection!'),
+                                action: SnackBarAction(
+                                  label: 'View card',
+                                  onPressed: () {
+                                    this.context.go('/collections');
+                                  },
+                                ),
+                              ),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: ${e.toString()}')),
+                            );
+                          }
+                        },
+                      child: const Text("Add to Collection"),
+                    );
+                  },
                 ),
               ],
             ),
