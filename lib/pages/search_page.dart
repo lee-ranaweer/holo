@@ -143,6 +143,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   const SizedBox(width: 8),
+                  // Filter
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: GestureDetector(

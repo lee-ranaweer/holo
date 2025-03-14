@@ -52,49 +52,59 @@ class HomePage extends ConsumerWidget {
               const SizedBox(height: 20),
 
               // User Profile Section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey.shade900,
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.grey.shade800,
-                      child: const Icon(
-                        Icons.person,
-                        size: 30,
-                        color: Colors.white,
+              GestureDetector(
+                onTap: () {
+                  // go to user account page
+                  context.go('/account');
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey.shade900,
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.grey.shade800,
+                        child: const Icon(
+                          Icons.person,
+                          size: 30,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.email!,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userProfile.when(
+                                data: (data) => data?['username'] ?? currentUser.email!,
+                                loading: () => currentUser.email ?? 'Loading...',
+                                error: (_, __) => currentUser.email ?? 'Error',
+                              ),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Active Portfolio User",
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 14,
+                            const SizedBox(height: 4),
+                            Text(
+                              "New Portfolio User",
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const Icon(Icons.show_chart, color: Colors.white, size: 30),
-                  ],
+                      const Icon(Icons.show_chart, color: Colors.white, size: 30),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
