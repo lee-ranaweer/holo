@@ -65,11 +65,11 @@ class AccountPage extends ConsumerWidget {
                     backgroundColor: Colors.grey.shade800,
                     child: const Icon(
                       Icons.person,
-                      size: 30,
+                      size: 36,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 16),
                   Text(
                     userProfile.when(
                       data: (data) => data?['username'] ?? currentUser.email!,
