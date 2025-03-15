@@ -212,7 +212,7 @@ class CollectionsPage extends ConsumerWidget  {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'Showing: All cards',
+                'Showing: All cards ($cardqty)',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
