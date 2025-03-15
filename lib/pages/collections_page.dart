@@ -124,6 +124,7 @@ class CollectionsPage extends ConsumerWidget  {
     final collectionAsync = ref.watch(collectionProvider);
     final filteredCollectionAsync = ref.watch(filteredCollectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
+    final cardqty = ref.watch(collectionProvider).value!.length;
 
     return Scaffold(
       body: SafeArea(
@@ -212,7 +213,7 @@ class CollectionsPage extends ConsumerWidget  {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'Showing: All cards',
+                'Showing: All cards ($cardqty)',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
