@@ -79,74 +79,83 @@ class DetailsPage extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         // set info
-                        Column(
-                          children: [
-                            Text(
-                              'Set',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 14,
+                        Flexible(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Set',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 14,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              card!['set']['name'] ?? 'Unknown',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              const SizedBox(height: 2),
+                              Text(
+                                card!['set']['name'] ?? 'Unknown',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         // rarity info
-                        Column(
-                          children: [
-                            Text(
-                              'Rarity',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 14,
+                        Flexible(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Rarity',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 14,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              card!['rarity'] ?? 'Unknown',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              const SizedBox(height: 2),
+                              Text(
+                                card!['rarity'] ?? 'Unknown',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         // price info
-                        Column(
-                          children: [
-                            Text(
-                              'Value',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 14,
+                        Flexible(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Value',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 14,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              "\$${card!['price'] != "N/A" ? card!['price'] : "N/A"}",
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              const SizedBox(height: 2),
+                              Text(
+                                "\$${card!['price'] != "N/A" ? card!['price'] : "N/A"}",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        )
+                            ],
+                          )
+                        ),
                       ],
                     ),
                   ),

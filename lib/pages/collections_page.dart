@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:holo/pages/details_page.dart';
 import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/card_widgets.dart';
@@ -204,6 +205,19 @@ class CollectionsPage extends ConsumerWidget  {
                     ),
                   ),
                 ],
+              ),
+            ),
+
+            // current deck
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Showing: All cards',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade500,
+                ),
               ),
             ),
 
