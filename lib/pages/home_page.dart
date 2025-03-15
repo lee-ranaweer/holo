@@ -69,14 +69,37 @@ class HomePage extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Colors.grey.shade800,
-                        child: const Icon(
-                          Icons.person,
-                          size: 30,
-                          color: Colors.white,
-                        ),
+                      Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Icon(
+                              Icons.person,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                          // View Profile Button
+                          // Container(
+                          //   alignment: Alignment.topRight,
+                          //   child: TextButton(
+                          //     onPressed: () {
+                          //       context.go('/account');
+                          //     },
+                          //     style: TextButton.styleFrom(
+                          //       visualDensity: VisualDensity.compact,
+                          //       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          //     ),
+                          //     child: const Text(
+                          //       'View Profile',
+                          //       style: TextStyle(
+                          //         fontSize: 12,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // )
+                        ],
                       ),
                       const SizedBox(width: 16),
                       Expanded(
