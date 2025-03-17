@@ -29,6 +29,10 @@ class NavBar extends StatelessWidget {
           showSelectedLabels: true, // Show labels only for selected tabs
 
           onTap: (index) {
+            if (GoRouter.of(context).canPop())
+            {
+              context.pop(context);
+            }
             switch (index) {
               case 0:
                 context.go('/');
