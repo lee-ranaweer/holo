@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:holo/pages/decks_page.dart';
 import 'package:holo/pages/details_page.dart';
 import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,7 +125,7 @@ class CollectionsPage extends ConsumerWidget  {
     final collectionAsync = ref.watch(collectionProvider);
     final filteredCollectionAsync = ref.watch(filteredCollectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
-    final cardqty = ref.watch(collectionProvider).value!.length;
+    final cardqty = ref.watch(collectionProvider).value?.length;
 
     return Scaffold(
       body: SafeArea(
@@ -204,6 +205,81 @@ class CollectionsPage extends ConsumerWidget  {
                         ),
                       ),
                     ),
+                  ),
+                  // _buildButton(context, 'Filter', Icons.filter_list, () {
+                  //   // TODO: Add filter functionality.
+                  // }),
+                  // SizedBox(width: 20),
+                  // _buildButton(context, 'Market', Icons.trending_up, () {
+                  //   // TODO: Add rec functionality.
+                  // }),
+                  // Deck button
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DecksPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade900,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Colors.grey.shade800,
+                          width: 1,
+                          style: BorderStyle.solid
+                        ),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0,
+                        vertical: 12.0,
+                      ),
+                    ),
+                    icon: Icon(Icons.list, color: Colors.white),
+                    label: Text(
+                      'Decks',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  ),
+                  Spacer(),
+                  // Plus button for adding cards
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.go('/search');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade900,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Colors.grey.shade800,
+                          width: 1,
+                          style: BorderStyle.solid
+                        ),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0,
+                        vertical: 12.0,
+                      ),
+                    ),
+                    icon: Icon(Icons.add, color: Colors.white),
+                    label: Text(
+                      'Add card',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
                   ),
                 ],
               ),

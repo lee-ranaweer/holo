@@ -191,6 +191,7 @@ class DetailsPage extends ConsumerWidget {
         label: const Text('Add To Collection'),
         backgroundColor: Colors.grey.shade900,
         // foregroundColor: Colors.grey.shade900,
+        icon: Icon(Icons.add),
       ),
     );
   }
