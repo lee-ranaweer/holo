@@ -71,6 +71,38 @@ class CollectionService {
         .set(card);
   }
 
+  // Check existing card from collection
+  Future<bool> checkCard(String cardId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('Not authenticated');
+
+    try {
+      var ref = _firestore.collection('users')
+        .doc(user.uid)
+        .collection('cards');
+      var card = await ref.doc(cardId).get();
+      return card.exists;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  // Remove card from user's collection
+  Future<void> removeCard(Map<String, dynamic> card) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('Not authenticated');
+    
+    await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('cards')
+        .doc(card['id'])
+        .delete().then(
+          (doc) => print('Card deleted.'),
+          onError: (e) => print("Unable to delete card"),
+        );
+  }
+
   // Stream of user's collected cards
   Stream<QuerySnapshot> get userCards {
     final user = FirebaseAuth.instance.currentUser;
