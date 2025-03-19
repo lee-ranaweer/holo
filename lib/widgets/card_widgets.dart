@@ -125,6 +125,11 @@ class CardListItem extends ConsumerWidget {
 
 
   void _showCardDetails(BuildContext context, WidgetRef ref) {
+    final isInCollection = ref.read(collectionProvider).maybeWhen(
+          data: (cards) => cards.any((c) => c['id'] == card['id']),
+          orElse: () => false,
+        );
+
     showDialog(
       context: context,
       builder: (context) {
@@ -173,24 +178,44 @@ class CardListItem extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      final collectionService =
-                          ref.read(collectionServiceProvider);
-                      await collectionService.addCard(card);
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Card added to collection!')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${e.toString()}')),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final collection = ref.watch(collectionProvider);
+                    final isInCollection = collection.maybeWhen(
+                      data: (cards) => cards.any((c) => c['id'] == card['id']),
+                      orElse: () => false,
+                    );
+
+                    if (isInCollection) {
+                      return Text(
+                        'Already in Collection',
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontStyle: FontStyle.italic,
+                        ),
                       );
                     }
+
+                    return ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          final collectionService = 
+                            ref.read(collectionServiceProvider);
+                          await collectionService.addCard(card);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Card added to collection!')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
+                      },
+                      child: const Text("Add to Collection"),
+                    );
                   },
-                  child: const Text("Add to Collection"),
                 ),
               ],
             ),
