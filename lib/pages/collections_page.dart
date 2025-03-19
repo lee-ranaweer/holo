@@ -271,11 +271,11 @@ class CollectionsPage extends ConsumerWidget  {
                         vertical: 12.0,
                       ),
                     ),
-                    icon: Icon(Icons.add, color: Colors.white),
+                    icon: Icon(Icons.add, color: Colors.teal.shade200),
                     label: Text(
                       'Add card',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Colors.teal.shade200,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),

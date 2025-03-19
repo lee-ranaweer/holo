@@ -2,14 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class DetailsPage extends ConsumerWidget {
-  Map<String, dynamic>? card;
-  DetailsPage({super.key, this.card}); 
+class DetailsPage extends ConsumerStatefulWidget {
+  const DetailsPage({
+    super.key,
+    this.card,
+  });
+
+  final Map<String, dynamic>? card;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  DetailsPageState createState() => DetailsPageState();
+} 
 
+class DetailsPageState extends ConsumerState<DetailsPage> {
+  var _cardExists = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCardExists();
+  }
+
+  _getCardExists() async {
+    final collectionService = ref.read(collectionServiceProvider);
+    bool cardExists = await collectionService.checkCard(widget.card!['id']);
+    setState(() {_cardExists = cardExists;});
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -56,7 +79,7 @@ class DetailsPage extends ConsumerWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
-                      card!['images']['large'],
+                      widget.card!['images']['large'],
                       fit: BoxFit.contain,
                       height: 400,
                     ),
@@ -64,7 +87,7 @@ class DetailsPage extends ConsumerWidget {
                   const SizedBox(height: 24),
                   // Title & Price
                   Text(
-                    card!['name'],
+                    widget.card!['name'],
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -93,7 +116,7 @@ class DetailsPage extends ConsumerWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                card!['set']['name'] ?? 'Unknown',
+                                widget.card!['set']['name'] ?? 'Unknown',
                                 style: TextStyle(
                                   color: Colors.grey.shade500,
                                   fontSize: 16,
@@ -119,7 +142,7 @@ class DetailsPage extends ConsumerWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                card!['rarity'] ?? 'Unknown',
+                                widget.card!['rarity'] ?? 'Unknown',
                                 style: TextStyle(
                                   color: Colors.grey.shade500,
                                   fontSize: 16,
@@ -145,7 +168,7 @@ class DetailsPage extends ConsumerWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "\$${card!['price'] != "N/A" ? card!['price'] : "N/A"}",
+                                "\$${widget.card!['price'] != "N/A" ? widget.card!['price'] : "N/A"}",
                                 style: TextStyle(
                                   color: Colors.green,
                                   fontSize: 16,
@@ -166,33 +189,44 @@ class DetailsPage extends ConsumerWidget {
         ),
       ),
       // Add to collection
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          try {
-            final collectionService = ref.read(collectionServiceProvider);
-            await collectionService.addCard(card!);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Card added to collection!'),
-                action: SnackBarAction(
-                  label: 'View card',
-                  onPressed: () {
-                    context.go('/collections');
-                  },
-                ),
-              ),
-            );
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${e.toString()}')),
-            );
-          }
-        },
-        label: const Text('Add To Collection'),
-        backgroundColor: Colors.grey.shade900,
-        // foregroundColor: Colors.grey.shade900,
-        icon: Icon(Icons.add),
-      ),
+      floatingActionButton: 
+        _cardExists
+        ? FloatingActionButton.extended(
+            onPressed: () async {
+              print('hi');
+            },
+            label: const Text('In Collection'),
+            backgroundColor: Colors.grey.shade900,
+            foregroundColor: Colors.teal.shade50,
+            icon: Icon(Icons.check),
+          )
+          :
+          FloatingActionButton.extended(
+            onPressed: () async {
+              try {
+                final collectionService = ref.read(collectionServiceProvider);
+                // add card
+                await collectionService.addCard(widget.card!);
+                // show toast
+                Fluttertoast.showToast(
+                    msg: "Card added to collection!",
+                    gravity: ToastGravity.CENTER,
+                    textColor: Colors.teal.shade50,
+                );
+                // update
+                _getCardExists();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: ${e.toString()}')),
+                );
+              }
+            },
+            label: const Text('Add To Collection'),
+            backgroundColor: Colors.grey.shade900,
+            foregroundColor: Colors.teal.shade200,
+            icon: Icon(Icons.add),
+          )
     );
   }
 }
+
