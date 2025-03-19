@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:holo/pages/details_page.dart';
+import 'package:holo/widgets/card_list.dart';
 import 'package:http/http.dart' as http;
-import '../widgets/card_widgets.dart';
+import '../widgets/card_grid.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -239,8 +240,7 @@ class _SearchPageState extends State<SearchPage> {
                   ListView.builder(
                     itemCount: _cards.length,
                     itemBuilder: (context, index) {
-                      final card = _cards[index];
-                      return _buildCardItem(context, card);
+                      return CardListItem(card: _cards[index]);
                     }
                   )
               :
@@ -254,33 +254,6 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCardItem(BuildContext context, Map<String, dynamic> card) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 8.0,
-      ),
-      leading: Image.network(card['images']['small'], width: 50, height: 50),
-      title: Text(
-        card['name'],
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      subtitle: Text(
-        '${card['set']['name'] ?? 'Unknown'} | ${card['rarity'] ?? 'Unknown'}',
-        style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-      ),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetailsPage(card: card),
         ),
       ),
     );

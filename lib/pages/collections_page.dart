@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:holo/pages/decks_page.dart';
 import 'package:holo/pages/details_page.dart';
+import 'package:holo/widgets/card_list.dart';
 import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/card_widgets.dart';
+import '../widgets/card_grid.dart';
 
 class CollectionsPage extends ConsumerStatefulWidget  {
   const CollectionsPage({super.key}); 
@@ -305,79 +306,9 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
       ListView.builder(
         itemCount: cards.length,
         itemBuilder: (context, index) {
-          final card = cards[index];
-          return _buildCollectionCard(context, card);
+          return CardListItem(card: cards[index]);
         }
       );
   }
-
-  Widget _buildCollectionCard(BuildContext context, Map<String, dynamic> card) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12.0),
-        leading: Image.network(card['images']['small'], width: 60, height: 60),
-        title: Text(
-          card['name'],
-          style: const TextStyle(color: Colors.white),
-        ),
-        subtitle: Text(
-          card['set']['name'],
-          style: TextStyle(color: Colors.grey.shade500),
-        ),
-        trailing: Text(
-          '\$${card['price']}',
-          style: const TextStyle(
-            color: Colors.green,
-            fontSize: 16,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailsPage(card: card)
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Button styling function for "Filter" and "Rec"
-  Widget _buildButton(
-    BuildContext context,
-    String label,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-          borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(color: Colors.grey.shade800, width: 1),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: Colors.white),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
+

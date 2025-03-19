@@ -231,3 +231,4 @@ class CardGridItem extends ConsumerWidget {
     );
   }
 }
+
