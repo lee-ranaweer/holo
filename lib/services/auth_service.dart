@@ -26,6 +26,25 @@ final collectionServiceProvider = Provider<CollectionService>((ref) {
   return CollectionService();
 });
 
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+final filteredCollectionProvider = Provider<AsyncValue<List<Map<String, dynamic>>>>((ref) {
+  final collectionAsync = ref.watch(collectionProvider);
+  final query = ref.watch(searchQueryProvider).toLowerCase().trim();
+
+  return collectionAsync.when(
+    data: (cards) {
+      if (query.isEmpty) return AsyncData(cards);
+      final filtered = cards.where((card) =>
+        card['name'].toLowerCase().contains(query)
+      ).toList();
+      return AsyncData(filtered);
+    },
+    loading: () => const AsyncLoading(),
+    error: (error, stackTrace) => AsyncError(error, stackTrace),
+  );
+});
+
 class CollectionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
