@@ -7,6 +7,117 @@ import '../widgets/card_widgets.dart';
 class CollectionsPage extends ConsumerWidget  {
   const CollectionsPage({super.key}); 
 
+  void _showRarityFilter(BuildContext context, WidgetRef ref) {
+    const rarityOptions = [
+      'Unknown',
+      'Common',
+      'Uncommon',
+      'Rare',
+      'Rare Holo',
+      'Promo',
+      'Ultra Rare',
+      'Hyper Rare',
+      'Double Rare',
+      'Secret Rare',
+    ];
+
+    final currentSelection = ref.read(selectedRaritiesProvider);
+    var tempSelection = Set<String>.from(currentSelection);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "Filter by Rarity",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    ...rarityOptions.map((rarity) {
+                      return CheckboxListTile(
+                        title: Text(
+                          rarity,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        value: tempSelection.contains(rarity),
+                        activeColor: Colors.green,
+                        checkColor: Colors.white,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value == true) {
+                              tempSelection.add(rarity);
+                            } else {
+                              tempSelection.remove(rarity);
+                            }
+                          });
+                        },
+                      );
+                    }),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            tempSelection.clear();
+                            ref.read(selectedRaritiesProvider.notifier).state = tempSelection;
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Clear',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            ref.read(selectedRaritiesProvider.notifier).state = tempSelection;
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                          ),
+                          child: const Text('Apply'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final collectionAsync = ref.watch(collectionProvider);
@@ -65,13 +176,12 @@ class CollectionsPage extends ConsumerWidget  {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   // Filter Button
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: GestureDetector(
-                      onTap: () {
-                        // TODO: Implement collection filter
-                      },
+                      onTap: () => _showRarityFilter(context, ref),
                       child: Container(
                         padding: const EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
@@ -93,31 +203,6 @@ class CollectionsPage extends ConsumerWidget  {
                       ),
                     ),
                   ),
-                  // Plus button for adding cards
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     context.go('/search');
-                  //   },
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(14.0),
-                  //     decoration: BoxDecoration(
-                  //       shape: BoxShape.circle,
-                  //       color: Colors.white,
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //           color: Colors.white.withOpacity(0.2),
-                  //           blurRadius: 10,
-                  //           spreadRadius: 1,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     child: const Icon(
-                  //       Icons.add,
-                  //       size: 28,
-                  //       color: Colors.black,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -163,40 +248,6 @@ class CollectionsPage extends ConsumerWidget  {
       ),
       itemCount: cards.length,
       itemBuilder: (context, index) => CardListItem(card: cards[index]),
-    );
-  }
-
-  // Button styling function for "Filter" and "Rec"
-  Widget _buildButton(
-    BuildContext context,
-    String label,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-          borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(color: Colors.grey.shade800, width: 1),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: Colors.white),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

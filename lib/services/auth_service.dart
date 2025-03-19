@@ -28,16 +28,26 @@ final collectionServiceProvider = Provider<CollectionService>((ref) {
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
+final selectedRaritiesProvider = StateProvider<Set<String>>((ref) => Set());
+
 final filteredCollectionProvider = Provider<AsyncValue<List<Map<String, dynamic>>>>((ref) {
   final collectionAsync = ref.watch(collectionProvider);
   final query = ref.watch(searchQueryProvider).toLowerCase().trim();
+  final selectedRarities = ref.watch(selectedRaritiesProvider);
 
   return collectionAsync.when(
     data: (cards) {
-      if (query.isEmpty) return AsyncData(cards);
-      final filtered = cards.where((card) =>
-        card['name'].toLowerCase().contains(query)
-      ).toList();
+      final filtered = cards.where((card) {
+        final nameMatch = query.isEmpty || 
+            card['name'].toLowerCase().contains(query);
+        
+        final cardRarity = card['rarity']?.toLowerCase() ?? 'unknown';
+        final rarityMatch = selectedRarities.isEmpty ||
+            selectedRarities.any((rarity) => 
+                cardRarity.contains(rarity.toLowerCase()));
+
+        return nameMatch && rarityMatch;
+      }).toList();
       return AsyncData(filtered);
     },
     loading: () => const AsyncLoading(),
