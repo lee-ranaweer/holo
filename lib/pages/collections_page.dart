@@ -152,60 +152,6 @@ class CollectionsPage extends ConsumerWidget  {
               ),
               child: Row(
                 children: [
-                  Expanded(
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      cursorColor: Colors.white,
-                      onSubmitted: (value) {
-                        ref.read(searchQueryProvider.notifier).state = value;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.shade900,
-                        hintText: 'Search your collection...',
-                        hintStyle: TextStyle(color: Colors.grey.shade600),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 16.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Filter Button
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: GestureDetector(
-                      onTap: () => _showRarityFilter(context, ref),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade900,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.filter_alt_outlined,
-                          size: 28,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
                   // _buildButton(context, 'Filter', Icons.filter_list, () {
                   //   // TODO: Add filter functionality.
                   // }),
@@ -285,6 +231,72 @@ class CollectionsPage extends ConsumerWidget  {
               ),
             ),
 
+            // Navbar-like row with 3 buttons: Filter, Rec, and a circular + button.
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(color: Colors.white),
+                      cursorColor: Colors.white,
+                      onSubmitted: (value) {
+                        ref.read(searchQueryProvider.notifier).state = value;
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey.shade900,
+                        hintText: 'Search your collection...',
+                        hintStyle: TextStyle(color: Colors.grey.shade600),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Filter Button
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: GestureDetector(
+                      onTap: () => _showRarityFilter(context, ref),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey.shade900,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.2),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.filter_alt_outlined,
+                          size: 28,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             // current deck
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -342,6 +354,7 @@ class CollectionsPage extends ConsumerWidget  {
     // );
 
     return ListView.builder(
+      itemCount: cards.length,
       itemBuilder: (context, index) {
         final card = cards[index];
         return _buildCollectionCard(context, card);
