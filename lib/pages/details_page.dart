@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class DetailsPage extends ConsumerStatefulWidget {
   const DetailsPage({
@@ -191,35 +192,77 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
       // Add to collection
       floatingActionButton: 
         _cardExists
-        ? FloatingActionButton.extended(
-            onPressed: () async {
-              print('hi');
-            },
+        ? SpeedDial(
             label: const Text('In Collection'),
             backgroundColor: Colors.grey.shade900,
             foregroundColor: Colors.teal.shade50,
-            icon: Icon(Icons.check),
+            overlayOpacity: 0,
+            icon: Icons.check,
+            children: [
+              SpeedDialChild(
+                child: Icon(Icons.delete_outline),
+                backgroundColor: Colors.grey.shade900,
+                foregroundColor: Colors.red.shade600,
+                label: 'Remove card',
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.grey.shade900,
+                      titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
+                      contentTextStyle: const TextStyle(color: Colors.white),
+                      title: Text("Warning"),
+                      content: Text("Are you sure you want to remove this card from your collection?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {Navigator.pop(context);},
+                          child: Text(
+                            'No',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final collectionService = ref.read(collectionServiceProvider);
+                            // add card
+                            await collectionService.removeCard(widget.card!);
+                            // show toast
+                            Fluttertoast.showToast(
+                                msg: "Card removed from collection!",
+                                gravity: ToastGravity.CENTER,
+                                textColor: Colors.teal.shade50,
+                            );
+                            // update
+                            _getCardExists();
+                            // return
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Yes',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                ),
+              ),
+            ],
           )
           :
           FloatingActionButton.extended(
             onPressed: () async {
-              try {
-                final collectionService = ref.read(collectionServiceProvider);
-                // add card
-                await collectionService.addCard(widget.card!);
-                // show toast
-                Fluttertoast.showToast(
-                    msg: "Card added to collection!",
-                    gravity: ToastGravity.CENTER,
-                    textColor: Colors.teal.shade50,
-                );
-                // update
-                _getCardExists();
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${e.toString()}')),
-                );
-              }
+              final collectionService = ref.read(collectionServiceProvider);
+              // add card
+              await collectionService.addCard(widget.card!);
+              // show toast
+              Fluttertoast.showToast(
+                  msg: "Card added to collection!",
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.teal.shade50,
+              );
+              // update
+              _getCardExists();
             },
             label: const Text('Add To Collection'),
             backgroundColor: Colors.grey.shade900,
