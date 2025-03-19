@@ -331,18 +331,21 @@ class CollectionsPage extends ConsumerWidget  {
       );
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(3),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 0.55, // Adjusted aspect ratio
-      ),
-      itemCount: cards.length,
-      itemBuilder: (context, index) => CardListItem(card: cards[index]),
-      // itemBuilder: (context, index) {
-      //   final card = cards[index];
-      //   return _buildCollectionCard(context, card);
-      // },
+    // return GridView.builder(
+    //   padding: const EdgeInsets.all(3),
+    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    //     crossAxisCount: 3,
+    //     childAspectRatio: 0.55, // Adjusted aspect ratio
+    //   ),
+    //   itemCount: cards.length,
+    //   itemBuilder: (context, index) => CardListItem(card: cards[index]),
+    // );
+
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        final card = cards[index];
+        return _buildCollectionCard(context, card);
+      }
     );
   }
 

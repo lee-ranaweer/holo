@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:holo/pages/details_page.dart';
 import 'package:http/http.dart' as http;
+import '../widgets/card_widgets.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -210,15 +211,22 @@ class _SearchPageState extends State<SearchPage> {
                       :
                       // Card List
                       !_isLoading
-                      ? GridView.builder(
-                          padding: const EdgeInsets.all(5),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 0.55, // Adjusted aspect ratio
-                          ),
-                          itemCount: _cards.length,
-                          itemBuilder: (context, index) => CardListItem(card: _cards[index]),
-                        )
+                      ? ListView.builder(
+                        itemCount: _cards.length,
+                        itemBuilder: (context, index) {
+                          final card = _cards[index];
+                          return _buildCardItem(context, card);
+                        }
+                      )
+                      // ? GridView.builder(
+                      //     padding: const EdgeInsets.all(5),
+                      //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      //       crossAxisCount: 3,
+                      //       childAspectRatio: 0.55, // Adjusted aspect ratio
+                      //     ),
+                      //     itemCount: _cards.length,
+                      //     itemBuilder: (context, index) => CardListItem(card: _cards[index]),
+                      //   )
                       :
                       // Loading Indicator
                       const FittedBox(
