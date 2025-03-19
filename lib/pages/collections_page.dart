@@ -6,8 +6,15 @@ import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/card_widgets.dart';
 
-class CollectionsPage extends ConsumerWidget  {
+class CollectionsPage extends ConsumerStatefulWidget  {
   const CollectionsPage({super.key}); 
+
+  @override
+  CollectionsPageState createState() => CollectionsPageState();
+}
+
+class CollectionsPageState extends ConsumerState<CollectionsPage> {
+  bool _gridMode = false;
 
   void _showRarityFilter(BuildContext context, WidgetRef ref) {
     const rarityOptions = [
@@ -118,10 +125,8 @@ class CollectionsPage extends ConsumerWidget  {
     );
   }
 
-
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final collectionAsync = ref.watch(collectionProvider);
     final filteredCollectionAsync = ref.watch(filteredCollectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
@@ -152,9 +157,6 @@ class CollectionsPage extends ConsumerWidget  {
               ),
               child: Row(
                 children: [
-                  // _buildButton(context, 'Filter', Icons.filter_list, () {
-                  //   // TODO: Add filter functionality.
-                  // }),
                   // SizedBox(width: 20),
                   // _buildButton(context, 'Market', Icons.trending_up, () {
                   //   // TODO: Add rec functionality.
@@ -231,7 +233,7 @@ class CollectionsPage extends ConsumerWidget  {
               ),
             ),
 
-            // Navbar-like row with 3 buttons: Filter, Rec, and a circular + button.
+            // Search, filter, and view mode
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -239,6 +241,7 @@ class CollectionsPage extends ConsumerWidget  {
               ),
               child: Row(
                 children: [
+                  // Search Bar
                   Expanded(
                     child: TextField(
                       style: const TextStyle(color: Colors.white),
@@ -267,37 +270,49 @@ class CollectionsPage extends ConsumerWidget  {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Filter Button
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: GestureDetector(
-                      onTap: () => _showRarityFilter(context, ref),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade900,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.filter_alt_outlined,
-                          size: 28,
-                          color: Colors.white,
-                        ),
-                      ),
+                  // Filter
+                  IconButton(
+                    onPressed: () {
+                      _showRarityFilter(context, ref);
+                    },
+                    icon: const Icon(Icons.filter_alt_outlined, size: 20),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
+                  // List/Grid mode
+                  _gridMode 
+                  ? IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _gridMode = false;
+                        });
+                      },
+                      icon: const Icon(Icons.list, size: 20),
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    )
+                  :
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _gridMode = true;
+                      });
+                    },
+                    icon: const Icon(Icons.grid_on, size: 20),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  )
                 ],
               ),
             ),
 
-            // current deck
+            // current deck and qty
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -343,23 +358,24 @@ class CollectionsPage extends ConsumerWidget  {
       );
     }
 
-    // return GridView.builder(
-    //   padding: const EdgeInsets.all(3),
-    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 3,
-    //     childAspectRatio: 0.55, // Adjusted aspect ratio
-    //   ),
-    //   itemCount: cards.length,
-    //   itemBuilder: (context, index) => CardListItem(card: cards[index]),
-    // );
-
-    return ListView.builder(
-      itemCount: cards.length,
-      itemBuilder: (context, index) {
-        final card = cards[index];
-        return _buildCollectionCard(context, card);
-      }
-    );
+    return _gridMode 
+    ? GridView.builder(
+        padding: const EdgeInsets.all(3),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.55, // Adjusted aspect ratio
+        ),
+        itemCount: cards.length,
+        itemBuilder: (context, index) => CardGridItem(card: cards[index]),
+      )
+      :
+      ListView.builder(
+        itemCount: cards.length,
+        itemBuilder: (context, index) {
+          final card = cards[index];
+          return _buildCollectionCard(context, card);
+        }
+      );
   }
 
   Widget _buildCollectionCard(BuildContext context, Map<String, dynamic> card) {

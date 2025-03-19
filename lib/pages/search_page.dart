@@ -17,6 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   bool _search = false;
   var _setFilter, _rarFilter;
   String _errorMessage = '';
+  bool _gridMode = false;
 
   Future<void> _searchCards(String query) async {
     if (query.isEmpty) return;
@@ -108,6 +109,7 @@ class _SearchPageState extends State<SearchPage> {
       body: SafeArea(
         child: Column(
           children: [
+            // Search, filter, and view mode
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -143,31 +145,43 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   const SizedBox(width: 8),
                   // Filter
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: GestureDetector(
-                      onTap: () => _showFilter(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade900,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.filter_alt_outlined,
-                          size: 28,
-                          color: Colors.white,
-                        ),
-                      ),
+                  IconButton(
+                    onPressed: () {
+                      _showFilter(context);
+                    },
+                    icon: const Icon(Icons.filter_alt_outlined, size: 20),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
+                  // List/Grid mode
+                  _gridMode 
+                  ? IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _gridMode = false;
+                        });
+                      },
+                      icon: const Icon(Icons.list, size: 20),
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    )
+                  :
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _gridMode = true;
+                      });
+                    },
+                    icon: const Icon(Icons.grid_on, size: 20),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -185,57 +199,59 @@ class _SearchPageState extends State<SearchPage> {
             // Search Results
             Expanded(
               child:
-                  // Search Cards
-                  _cards.isEmpty && !_search && !_isLoading
-                      ? Center(
-                        child: Text(
-                          'Search for a Pokémon card',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      )
-                      :
-                      // No Cards
-                      _cards.isEmpty && _search && !_isLoading
-                      ? Center(
-                        child: Text(
-                          'No cards found',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      )
-                      :
-                      // Card List
-                      !_isLoading
-                      ? ListView.builder(
-                        itemCount: _cards.length,
-                        itemBuilder: (context, index) {
-                          final card = _cards[index];
-                          return _buildCardItem(context, card);
-                        }
-                      )
-                      // ? GridView.builder(
-                      //     padding: const EdgeInsets.all(5),
-                      //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      //       crossAxisCount: 3,
-                      //       childAspectRatio: 0.55, // Adjusted aspect ratio
-                      //     ),
-                      //     itemCount: _cards.length,
-                      //     itemBuilder: (context, index) => CardListItem(card: _cards[index]),
-                      //   )
-                      :
-                      // Loading Indicator
-                      const FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
+              // Search Cards
+              _cards.isEmpty && !_search && !_isLoading
+              ? Center(
+                child: Text(
+                  'Search for a Pokémon card',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 16,
+                  ),
+                ),
+              )
+              :
+              // No Cards
+              _cards.isEmpty && _search && !_isLoading
+              ? Center(
+                child: Text(
+                  'No cards found',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 16,
+                  ),
+                ),
+              )
+              :
+              // Card List
+              !_isLoading
+              ? _gridMode 
+                ? GridView.builder(
+                    padding: const EdgeInsets.all(5),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.55, // Adjusted aspect ratio
+                    ),
+                    itemCount: _cards.length,
+                    itemBuilder: (context, index) => CardGridItem(card: _cards[index]),
+                  )
+                  :
+                  ListView.builder(
+                    itemCount: _cards.length,
+                    itemBuilder: (context, index) {
+                      final card = _cards[index];
+                      return _buildCardItem(context, card);
+                    }
+                  )
+              :
+              // Loading Indicator
+              const FittedBox(
+                fit: BoxFit.scaleDown,
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
             ),
           ],
         ),

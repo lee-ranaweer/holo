@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/auth_service.dart';
+import 'package:holo/pages/details_page.dart';
 
-class CardListItem extends ConsumerWidget {
+class CardGridItem extends ConsumerWidget {
   final Map<String, dynamic> card;
   final EdgeInsetsGeometry? margin;
 
 
-  const CardListItem({
+  const CardGridItem({
     super.key,
     required this.card,
     this.margin,
@@ -29,7 +30,12 @@ class CardListItem extends ConsumerWidget {
       //   // ],
       // ),
       child: InkWell(
-        onTap: () => _showCardDetails(context, ref),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsPage(card: card)
+          ),
+        ),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final cardWidth = constraints.maxWidth;
