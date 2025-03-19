@@ -10,9 +10,8 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).value!;
-    final watchlist = ref.watch(
-      watchlistProvider,
-    ); // Watchlist updates in real-time
+    final totalValue = ref.watch(portfolioValueProvider);
+    final watchlist = ref.watch(watchlistProvider);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -32,7 +31,7 @@ class HomePage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "\$20,224",
+                    "\$${totalValue.toStringAsFixed(2)}",
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,

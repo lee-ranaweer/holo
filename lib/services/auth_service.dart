@@ -67,6 +67,16 @@ final collectionProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 });
 
+  final portfolioValueProvider = Provider<double>((ref) {
+    final collection = ref.watch(collectionProvider);
+    return collection.maybeWhen(
+      data: (cards) => cards.fold(0.0, (total, card) {
+        final price = double.tryParse(card['price'] ?? '0') ?? 0.0;
+        return total + price;
+      }),
+      orElse: () => 0.0,
+    );
+  });
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

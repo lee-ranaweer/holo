@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/card_widgets.dart';
 
 class CollectionsPage extends ConsumerWidget  {
   const CollectionsPage({super.key}); 
@@ -9,6 +10,8 @@ class CollectionsPage extends ConsumerWidget  {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final collectionAsync = ref.watch(collectionProvider);
+    final totalValue = ref.watch(portfolioValueProvider);
+
 
     return Scaffold(
       body: SafeArea(
@@ -110,7 +113,19 @@ class CollectionsPage extends ConsumerWidget  {
       itemCount: cards.length,
       itemBuilder: (context, index) {
         final card = cards[index];
-        return _buildCollectionCard(card);
+        return CardListItem(
+          card: card,
+          margin: const EdgeInsets.only(bottom: 12.0),
+          contentPadding: const EdgeInsets.all(12.0),
+          trailing: Text(
+            '\$${card['price']}',
+            style: const TextStyle(
+              color: Colors.green,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
       },
     );
   }

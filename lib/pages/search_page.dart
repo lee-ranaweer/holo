@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/auth_service.dart';
+import '../widgets/card_widgets.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -211,10 +212,9 @@ class _SearchPageState extends State<SearchPage> {
                       // Card List
                       !_isLoading
                       ? ListView.builder(
-                        itemCount: _cards.length,
                         itemBuilder: (context, index) {
-                          final card = _cards[index];
-                          return _buildCardItem(context, card);
+                        final card = _cards[index];
+                        return CardListItem(card: card);
                         },
                       )
                       :
