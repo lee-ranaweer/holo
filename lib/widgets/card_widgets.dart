@@ -6,6 +6,7 @@ class CardListItem extends ConsumerWidget {
   final Map<String, dynamic> card;
   final EdgeInsetsGeometry? margin;
 
+
   const CardListItem({
     super.key,
     required this.card,
@@ -16,35 +17,35 @@ class CardListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: margin ?? const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 6,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
+      // decoration: BoxDecoration(
+      //   color: Colors.grey.shade900,
+      //   borderRadius: BorderRadius.circular(12),
+      //   // boxShadow: [
+      //   //   BoxShadow(
+      //   //     color: Colors.black.withOpacity(0.3),
+      //   //     blurRadius: 6,
+      //   //     spreadRadius: 2,
+      //   //   ),
+      //   // ],
+      // ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
         onTap: () => _showCardDetails(context, ref),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final cardWidth = constraints.maxWidth;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              
               children: [
                 // Image Container with fixed aspect ratio
                 SizedBox(
                   height: cardWidth * 1.4, // Height relative to card width
+                  
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
+                    borderRadius: BorderRadius.circular(5),
                     child: Image.network(
                       card['images']['small'],
+                      
                       fit: BoxFit.cover,
                       width: double.infinity,
                       loadingBuilder: (context, child, loadingProgress) {
@@ -64,19 +65,19 @@ class CardListItem extends ConsumerWidget {
 
                 // Card Details with constrained height
                 Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.only(top: 8.0),
                   child: SizedBox(
-                    height: 80, // Fixed height for text content
+                    height: 45, // Fixed height for text content
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           card['name'],
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 11,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -85,7 +86,7 @@ class CardListItem extends ConsumerWidget {
                           card['set']['name'] ?? 'Unknown Set',
                           style: TextStyle(
                             color: Colors.grey.shade400,
-                            fontSize: 14,
+                            fontSize: 9,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -97,14 +98,14 @@ class CardListItem extends ConsumerWidget {
                               card['rarity'] ?? 'Unknown Rarity',
                               style: TextStyle(
                                 color: Colors.grey.shade500,
-                                fontSize: 12,
+                                fontSize: 9,
                               ),
                             ),
                             Text(
                               '\$${card['price'] ?? 'N/A'}',
                               style: const TextStyle(
                                 color: Colors.green,
-                                fontSize: 16,
+                                fontSize: 9,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

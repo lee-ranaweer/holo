@@ -12,7 +12,6 @@ class CollectionsPage extends ConsumerWidget  {
     final collectionAsync = ref.watch(collectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
 
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -41,10 +40,10 @@ class CollectionsPage extends ConsumerWidget  {
                   _buildButton(context, 'Filter', Icons.filter_list, () {
                     // TODO: Add filter functionality.
                   }),
-                  SizedBox(width: 20),
-                  _buildButton(context, 'Market', Icons.trending_up, () {
-                    // TODO: Add rec functionality.
-                  }),
+                  // SizedBox(width: 20),
+                  // _buildButton(context, 'Market', Icons.trending_up, () {
+                  //   // TODO: Add rec functionality.
+                  // }),
                   Spacer(),
                   // Plus button for adding cards
                   GestureDetector(
@@ -109,12 +108,10 @@ class CollectionsPage extends ConsumerWidget  {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(3),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 0.8, // Adjusted aspect ratio
+        crossAxisCount: 3,
+        childAspectRatio: 0.55, // Adjusted aspect ratio
       ),
       itemCount: cards.length,
       itemBuilder: (context, index) => CardListItem(card: cards[index]),
