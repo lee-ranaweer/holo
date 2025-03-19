@@ -148,91 +148,6 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                 ),
               ),
             ),
-
-            // Navbar-like row with 3 buttons: Filter, Rec, and a circular + button.
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
-              child: Row(
-                children: [
-                  // SizedBox(width: 20),
-                  // _buildButton(context, 'Market', Icons.trending_up, () {
-                  //   // TODO: Add rec functionality.
-                  // }),
-                  // Deck button
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DecksPage(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey.shade900,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.grey.shade800,
-                          width: 1,
-                          style: BorderStyle.solid
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0,
-                        vertical: 12.0,
-                      ),
-                    ),
-                    icon: Icon(Icons.list, color: Colors.white),
-                    label: Text(
-                      'Decks',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ),
-                  Spacer(),
-                  // Plus button for adding cards
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      context.go('/search');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey.shade900,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.grey.shade800,
-                          width: 1,
-                          style: BorderStyle.solid
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0,
-                        vertical: 12.0,
-                      ),
-                    ),
-                    icon: Icon(Icons.add, color: Colors.teal.shade200),
-                    label: Text(
-                      'Add card',
-                      style: TextStyle(
-                        color: Colors.teal.shade200,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ),
-                ],
-              ),
-            ),
-
             // Search, filter, and view mode
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -341,6 +256,24 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
             ),
           ],
         ),
+      ),
+      // Add new card to collection
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          context.go('/search');
+        },
+        label: const Text('New Card'),
+        backgroundColor: Colors.grey.shade900,
+        foregroundColor: Colors.teal.shade200,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.grey.shade800,
+            width: 1,
+            style: BorderStyle.solid
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        icon: Icon(Icons.add),
       ),
     );
   }
