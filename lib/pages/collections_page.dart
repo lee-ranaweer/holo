@@ -108,55 +108,16 @@ class CollectionsPage extends ConsumerWidget  {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16.0),
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 0.8, // Adjusted aspect ratio
+      ),
       itemCount: cards.length,
-      itemBuilder: (context, index) {
-        final card = cards[index];
-        return CardListItem(
-          card: card,
-          margin: const EdgeInsets.only(bottom: 12.0),
-          contentPadding: const EdgeInsets.all(12.0),
-          trailing: Text(
-            '\$${card['price']}',
-            style: const TextStyle(
-              color: Colors.green,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCollectionCard(Map<String, dynamic> card) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12.0),
-        leading: Image.network(card['images']['small'], width: 60, height: 60),
-        title: Text(
-          card['name'],
-          style: const TextStyle(color: Colors.white),
-        ),
-        subtitle: Text(
-          card['set']['name'],
-          style: TextStyle(color: Colors.grey.shade500),
-        ),
-        trailing: Text(
-          '\$${card['price']}',
-          style: const TextStyle(
-            color: Colors.green,
-            fontSize: 16,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-      ),
+      itemBuilder: (context, index) => CardListItem(card: cards[index]),
     );
   }
 
