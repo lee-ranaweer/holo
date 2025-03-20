@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 import '../providers/watchlist_provider.dart';
+import './details_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -80,25 +81,6 @@ class HomePage extends ConsumerWidget {
                               color: Colors.white,
                             ),
                           ),
-                          // View Profile Button
-                          // Container(
-                          //   alignment: Alignment.topRight,
-                          //   child: TextButton(
-                          //     onPressed: () {
-                          //       context.go('/account');
-                          //     },
-                          //     style: TextButton.styleFrom(
-                          //       visualDensity: VisualDensity.compact,
-                          //       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          //     ),
-                          //     child: const Text(
-                          //       'View Profile',
-                          //       style: TextStyle(
-                          //         fontSize: 12,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // )
                         ],
                       ),
                       const SizedBox(width: 16),
@@ -108,8 +90,11 @@ class HomePage extends ConsumerWidget {
                           children: [
                             Text(
                               userProfile.when(
-                                data: (data) => data?['username'] ?? currentUser.email!,
-                                loading: () => currentUser.email ?? 'Loading...',
+                                data:
+                                    (data) =>
+                                        data?['username'] ?? currentUser.email!,
+                                loading:
+                                    () => currentUser.email ?? 'Loading...',
                                 error: (_, __) => currentUser.email ?? 'Error',
                               ),
                               style: const TextStyle(
@@ -129,7 +114,11 @@ class HomePage extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      const Icon(Icons.show_chart, color: Colors.white, size: 30),
+                      const Icon(
+                        Icons.show_chart,
+                        color: Colors.white,
+                        size: 30,
+                      ),
                     ],
                   ),
                 ),
@@ -267,7 +256,32 @@ class _WatchlistListWidgetState extends State<WatchlistListWidget> {
                                     Expanded(child: WatchlistTile(card: card)),
                                   ],
                                 )
-                                : WatchlistTile(card: card),
+                                : GestureDetector(
+                                  onTap: () {
+                                    // Convert the WatchlistItem into a Map<String, dynamic>
+                                    final cardMap = {
+                                      'id': card.id,
+                                      'name': card.name,
+                                      'images': {
+                                        'small': card.imageUrl,
+                                        'large':
+                                            card.imageUrl, // Using same image URL for large image.
+                                      },
+                                      'price': card.price.toString(),
+                                      'set': {'name': 'Unknown'},
+                                      'rarity': 'Unknown',
+                                    };
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                DetailsPage(card: cardMap),
+                                      ),
+                                    );
+                                  },
+                                  child: WatchlistTile(card: card),
+                                ),
                       );
                     },
                   ),
