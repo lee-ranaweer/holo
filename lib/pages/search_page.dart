@@ -18,10 +18,12 @@ class _SearchPageState extends State<SearchPage> {
   var _setFilter, _rarFilter;
   String _errorMessage = '';
   bool _gridMode = false;
+  int _cardqty = 0;
 
   Future<void> _searchCards(String query) async {
     if (query.isEmpty) return;
     _search = true;
+    _cardqty = 0;
 
     setState(() {
       _isLoading = true;
@@ -54,9 +56,11 @@ class _SearchPageState extends State<SearchPage> {
         if ((_setFilter != null && _setFilter != "None") ||
           (_rarFilter != null && _rarFilter != "None")) {
           _cards = filteredCards;
+          _cardqty = filteredCards.length;
         }
         else {
           _cards = fetchedCards;
+          _cardqty = fetchedCards.length;
         }
         _isLoading = false;
       });
@@ -108,6 +112,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search, filter, and view mode
             Padding(
@@ -186,6 +191,27 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
 
+            // qty
+            if (_search)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Showing: $_cardqty result(s)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+              ),
+
+            // Divider for separation
+            if (_search)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Divider(color: Colors.grey.shade800, thickness: 1),
+              ),
+
             // Error Message
             if (_errorMessage.isNotEmpty)
               Padding(
@@ -244,11 +270,14 @@ class _SearchPageState extends State<SearchPage> {
                   )
               :
               // Loading Indicator
-              const FittedBox(
-                fit: BoxFit.scaleDown,
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: CircularProgressIndicator(),
+              Align(
+                alignment: Alignment.center,
+                child: const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
               ),
             ),
