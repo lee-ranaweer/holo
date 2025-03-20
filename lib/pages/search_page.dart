@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:holo/pages/details_page.dart';
 import 'package:holo/widgets/card_list.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/card_grid.dart';
