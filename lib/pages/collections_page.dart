@@ -8,8 +8,8 @@ import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/card_grid.dart';
 
-class CollectionsPage extends ConsumerStatefulWidget  {
-  const CollectionsPage({super.key}); 
+class CollectionsPage extends ConsumerStatefulWidget {
+  const CollectionsPage({super.key});
 
   @override
   CollectionsPageState createState() => CollectionsPageState();
@@ -85,7 +85,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                         context: context,
                         builder: (context) {
                           return CollectionFilter();
-                        }
+                        },
                       );
                     },
                     icon: const Icon(Icons.filter_alt_outlined, size: 20),
@@ -95,32 +95,31 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                     ),
                   ),
                   // List/Grid mode
-                  _gridMode 
-                  ? IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _gridMode = false;
-                        });
-                      },
-                      icon: const Icon(Icons.list, size: 20),
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  _gridMode
+                      ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _gridMode = false;
+                          });
+                        },
+                        icon: const Icon(Icons.list, size: 20),
+                        style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      )
+                      : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _gridMode = true;
+                          });
+                        },
+                        icon: const Icon(Icons.grid_on, size: 20),
+                        style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                       ),
-                    )
-                  :
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _gridMode = true;
-                      });
-                    },
-                    icon: const Icon(Icons.grid_on, size: 20),
-                    style: TextButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                  )
                 ],
               ),
             ),
@@ -167,7 +166,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
           side: BorderSide(
             color: Colors.grey.shade800,
             width: 1,
-            style: BorderStyle.solid
+            style: BorderStyle.solid,
           ),
           borderRadius: BorderRadius.circular(12.0),
         ),
@@ -176,36 +175,31 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
     );
   }
 
-    Widget _buildCollectionList(List<Map<String, dynamic>> cards) {
+  Widget _buildCollectionList(List<Map<String, dynamic>> cards) {
     if (cards.isEmpty) {
       return Center(
         child: Text(
           'No cards added yet.',
-          style: TextStyle(
-            color: Colors.grey.shade500,
-            fontSize: 16,
-          ),
+          style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
         ),
       );
     }
 
-    return _gridMode 
-    ? GridView.builder(
-        padding: const EdgeInsets.all(3),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 0.55, // Adjusted aspect ratio
-        ),
-        itemCount: cards.length,
-        itemBuilder: (context, index) => CardGridItem(card: cards[index]),
-      )
-      :
-      ListView.builder(
-        itemCount: cards.length,
-        itemBuilder: (context, index) {
-          return CardListItem(card: cards[index]);
-        }
-      );
+    return _gridMode
+        ? GridView.builder(
+          padding: const EdgeInsets.all(3),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 0.55, // Adjusted aspect ratio
+          ),
+          itemCount: cards.length,
+          itemBuilder: (context, index) => CardGridItem(card: cards[index]),
+        )
+        : ListView.builder(
+          itemCount: cards.length,
+          itemBuilder: (context, index) {
+            return CardListItem(card: cards[index]);
+          },
+        );
   }
 }
-

@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../providers/watchlist_provider.dart';
+import '../providers/notifications_provider.dart'; // New import
 
 class DetailsPage extends ConsumerStatefulWidget {
   const DetailsPage({super.key, this.card});
@@ -38,7 +39,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // top bar
+            // Top Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Stack(
@@ -102,7 +103,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        // set info
+                        // Set Info
                         Flexible(
                           flex: 1,
                           child: Column(
@@ -128,7 +129,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                             ],
                           ),
                         ),
-                        // rarity info
+                        // Rarity Info
                         Flexible(
                           flex: 1,
                           child: Column(
@@ -154,7 +155,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                             ],
                           ),
                         ),
-                        // price info
+                        // Price Info
                         Flexible(
                           flex: 1,
                           child: Column(
@@ -189,7 +190,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
           ],
         ),
       ),
-      // Add to collection
+      // Floating Action Button: SpeedDial with options
       floatingActionButton: SpeedDial(
         label:
             _cardExists ? const Text('In Collection') : const Text('Options'),
@@ -224,7 +225,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             },
           ),
 
-          // Remove from Collection Button (if the card exists in the collection)
+          // Remove from Collection Button (if the card exists)
           if (_cardExists)
             SpeedDialChild(
               child: const Icon(Icons.delete_outline),
@@ -281,7 +282,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                   ),
             ),
 
-          // Add to Collection Button (if the card is not already in the collection)
+          // Add to Collection Button (if not already in collection)
           if (!_cardExists)
             SpeedDialChild(
               child: const Icon(Icons.add),
@@ -291,6 +292,17 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
               onTap: () async {
                 final collectionService = ref.read(collectionServiceProvider);
                 await collectionService.addCard(widget.card!);
+                // Add a notification for the card that was added
+                ref
+                    .read(notificationsProvider.notifier)
+                    .addNotification(
+                      NotificationItem(
+                        title: "Card Added",
+                        subtitle:
+                            "${widget.card!['name']} was added to your collection",
+                        time: DateTime.now(),
+                      ),
+                    );
                 Fluttertoast.showToast(
                   msg: "Card added to collection!",
                   gravity: ToastGravity.CENTER,

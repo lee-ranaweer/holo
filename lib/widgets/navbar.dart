@@ -29,8 +29,7 @@ class NavBar extends StatelessWidget {
           showSelectedLabels: true, // Show labels only for selected tabs
 
           onTap: (index) {
-            if (GoRouter.of(context).canPop())
-            {
+            if (GoRouter.of(context).canPop()) {
               context.pop(context);
             }
             switch (index) {
@@ -43,10 +42,10 @@ class NavBar extends StatelessWidget {
               case 2:
                 context.go('/search');
                 break;
-              // case 3:
-                // context.go('/notifications');
-                // break;
               case 3:
+                context.go('/notifications');
+                break;
+              case 4:
                 context.go('/account');
                 break;
             }
@@ -56,7 +55,7 @@ class NavBar extends StatelessWidget {
             _buildNavItem(Icons.home, 'Home'),
             _buildNavItem(Icons.collections, 'Collections'),
             _buildNavItem(Icons.search, 'Search'),
-            // _buildNavItem(Icons.notifications, 'Alerts'),
+            _buildNavItem(Icons.notifications, 'Alerts'),
             _buildNavItem(Icons.person, 'Profile'),
           ],
         ),
@@ -80,8 +79,8 @@ class NavBar extends StatelessWidget {
     if (location == '/') return 0;
     if (location == '/collections') return 1;
     if (location == '/search') return 2;
-    // if (location == '/notifications') return 3;
-    if (location == '/account') return 3;
+    if (location == '/notifications') return 3;
+    if (location == '/account') return 4;
     return 0;
   }
 }
