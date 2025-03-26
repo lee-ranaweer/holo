@@ -194,7 +194,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
       // Floating Action Button: SpeedDial with options
       floatingActionButton: SpeedDial(
         label:
-            _cardExists ? const Text('In Collection') : const Text('Options'),
+            _cardExists ? const Text('In Collection (1)') : const Text('Options'),
         backgroundColor: Colors.grey.shade900,
         foregroundColor: Colors.teal.shade50,
         overlayOpacity: 0,
@@ -276,7 +276,90 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                 textColor: Colors.teal.shade50,
               );
             },
+            // TODO: check if already in watchlist, and display "In Watchlist"
+            // Button should remove from watchlist
           ),
+
+          // Add multiple of the same card
+          if (_cardExists)
+            SpeedDialChild(
+              child: const Icon(Icons.add_circle_outline),
+              backgroundColor: Colors.grey.shade900,
+              foregroundColor: Colors.green.shade300,
+              label: 'Edit Quantity',
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      backgroundColor: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade900,
+                          borderRadius: BorderRadius.circular(16.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "Edit Quantity",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                              overflow:
+                                  TextOverflow
+                                      .ellipsis, // Prevents long names from breaking layout
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                IconButton.filled(
+                                  onPressed: () {
+
+                                  },
+                                  icon: const Icon(Icons.remove),
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: Colors.grey.shade800,
+                                    foregroundColor: Colors.white
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20.0,
+                                  child: TextField(),
+                                ),
+                                IconButton.filled(
+                                  onPressed: () {
+
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: Colors.grey.shade800,
+                                    foregroundColor: Colors.white
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                );
+              },
+            ),
 
           // Remove from Collection Button (if the card exists)
           if (_cardExists)
