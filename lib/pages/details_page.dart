@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../providers/watchlist_provider.dart';
 import '../providers/notifications_provider.dart'; // New import
+import '../providers/decks_provider.dart'; // Import decksProvider
 
 class DetailsPage extends ConsumerStatefulWidget {
   const DetailsPage({super.key, this.card});
@@ -199,6 +200,58 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
         overlayOpacity: 0,
         icon: _cardExists ? Icons.check : Icons.add,
         children: [
+          SpeedDialChild(
+            child: const Icon(Icons.playlist_add),
+            backgroundColor: Colors.grey.shade900,
+            foregroundColor: Colors.teal.shade200,
+            label: 'Add to Deck',
+            onTap: () async {
+              // Retrieve current decks from the provider
+              final decks = ref.read(decksProvider);
+              if (decks.isEmpty) {
+                Fluttertoast.showToast(
+                  msg: "No decks available. Please create a deck first.",
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.teal.shade50,
+                );
+                return;
+              }
+              // Show a bottom sheet to select a deck
+              final selectedDeckId = await showModalBottomSheet<String>(
+                context: context,
+                backgroundColor: Colors.grey.shade900,
+                builder: (context) {
+                  return ListView.builder(
+                    itemCount: decks.length,
+                    itemBuilder: (context, index) {
+                      final deck = decks[index];
+                      return ListTile(
+                        title: Text(
+                          deck.name,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context, deck.id);
+                        },
+                      );
+                    },
+                  );
+                },
+              );
+              // If a deck was selected, add the card to that deck
+              if (selectedDeckId != null) {
+                ref
+                    .read(decksProvider.notifier)
+                    .addCardToDeck(selectedDeckId, widget.card!);
+                Fluttertoast.showToast(
+                  msg: "${widget.card!['name']} added to deck!",
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.teal.shade50,
+                );
+              }
+            },
+          ),
+
           // Add to Watchlist Button
           SpeedDialChild(
             child: const Icon(Icons.visibility_outlined),

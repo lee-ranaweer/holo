@@ -42,6 +42,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
               ),
             ),
             // Search, filter, and view mode
+            // CollectionsPage snippet
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -49,36 +50,71 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
               ),
               child: Row(
                 children: [
-                  // Search Bar
+                  // Search Bar (shrink a little to make room for Decks button)
                   Expanded(
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      cursorColor: Colors.white,
-                      onSubmitted: (value) {
-                        ref.read(searchQueryProvider.notifier).state = value;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.shade900,
-                        hintText: 'Search your collection...',
-                        hintStyle: TextStyle(color: Colors.grey.shade600),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 16.0,
+                    flex: 3,
+                    child: SizedBox(
+                      height: 48, // Set consistent height
+                      child: TextField(
+                        style: const TextStyle(color: Colors.white),
+                        cursorColor: Colors.white,
+                        onSubmitted: (value) {
+                          ref.read(searchQueryProvider.notifier).state = value;
+                        },
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade900,
+                          hintText: 'Search your collection...',
+                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0.0,
+                            horizontal: 16.0,
+                          ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Filter
+
+                  // Decks Button (matches height and holo style)
+                  SizedBox(
+                    height: 48,
+                    child: TextButton(
+                      onPressed: () {
+                        context.push('/decks');
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.grey.shade900,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          side: BorderSide(
+                            color: Colors.grey.shade800,
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Decks',
+                        style: TextStyle(
+                          color: Colors.teal.shade200, // Holo color match
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  // Filter icon
                   IconButton(
                     onPressed: () {
                       showDialog(
@@ -94,7 +130,8 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-                  // List/Grid mode
+
+                  // List/Grid icon
                   _gridMode
                       ? IconButton(
                         onPressed: () {

@@ -43,6 +43,7 @@ dependencies:
   cloud_firestore: ^5.6.5
   fluttertoast: ^8.2.12
   flutter_speed_dial: ^7.0.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
