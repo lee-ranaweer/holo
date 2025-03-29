@@ -26,8 +26,8 @@ class _LineChartSample2State extends State<PriceChart> {
             padding: const EdgeInsets.only(
               right: 18,
               left: 12,
-              top: 24,
-              bottom: 12,
+              top: 12,
+              bottom: 4,
             ),
             child: LineChart(
               showAvg ? avgData() : mainData(),
@@ -44,12 +44,10 @@ class _LineChartSample2State extends State<PriceChart> {
               });
             },
             child: Text(
-              'avg',
+              'Value',
               style: TextStyle(
                 fontSize: 12,
-                color: showAvg
-                    ? Colors.white.withValues(alpha: 0.5)
-                    : Colors.white,
+                color: Colors.grey.shade500
               ),
             ),
           ),
@@ -59,23 +57,23 @@ class _LineChartSample2State extends State<PriceChart> {
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
+    var style = TextStyle(
+      fontSize: 12,
+      color: Colors.grey.shade400
     );
     Widget text;
     switch (value.toInt()) {
       case 2:
-        text = const Text('MAR', style: style);
+        text = Text('MAR', style: style);
         break;
       case 5:
-        text = const Text('JUN', style: style);
+        text = Text('JUN', style: style);
         break;
       case 8:
-        text = const Text('SEP', style: style);
+        text = Text('SEP', style: style);
         break;
       default:
-        text = const Text('', style: style);
+        text = Text('', style: style);
         break;
     }
 
@@ -86,20 +84,20 @@ class _LineChartSample2State extends State<PriceChart> {
   }
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
+    var style = TextStyle(
+      fontSize: 12,
+      color: Colors.grey.shade400
     );
     String text;
     switch (value.toInt()) {
       case 1:
-        text = '10K';
+        text = '\$20';
         break;
       case 3:
-        text = '30k';
+        text = '\$60';
         break;
       case 5:
-        text = '50k';
+        text = '\$100';
         break;
       default:
         return Container();

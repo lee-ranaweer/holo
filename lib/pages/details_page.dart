@@ -9,6 +9,7 @@ import '../providers/watchlist_provider.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/notifications_provider.dart'; // New import
 import '../providers/decks_provider.dart'; // Import decksProvider
 
@@ -96,10 +97,10 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
           // padding: EdgeInsets.all(15.0),
           padding: const EdgeInsets.only(bottom: 100),
           children: [
-            // Card Details
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
+                // Card Details
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 12),
@@ -113,12 +114,13 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  // Card Info
+                  // Card Title
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // card name
                         Text(
                           widget.card!['name'],
                           style: const TextStyle(
@@ -145,6 +147,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // Card Info
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: Row(
@@ -225,9 +228,108 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                               FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Text(
-                                  widget.card!['price'] != "N/A" ? "\$${widget.card!['price']}" : "N/A",
+                                  widget.card!['price'] != "N/A" ? "\$${double.parse(widget.card!['price']).toStringAsFixed(2)}" : "N/A",
                                   style: TextStyle(
                                     color: Colors.green,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Historical Price Info
+                  Text(
+                    'Historical Value',
+                    style: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 12,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  PriceChart(),
+                  // tcgplayer url
+                  InkWell(
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'View in TCGplayer ',
+                            style: TextStyle(
+                              color: Colors.teal.shade50,
+                              fontSize: 12,
+                            ),
+                          ),
+                          WidgetSpan(
+                            child: Icon(Icons.open_in_new, size: 15, color: Colors.teal.shade50)
+                          )
+                        ]
+                      ),
+                    ),
+                    onTap: () => launchUrl(Uri.parse(widget.card!['tcgplayer'])),
+                  ),
+                  const SizedBox(height: 12),
+                  // Additional Card Info
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        // artist info
+                        Flexible(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Artist',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  widget.card!['artist'] ?? 'Unknown',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // release date info
+                        Flexible(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Release Date',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  widget.card!['set']['releasedate'] ?? 'Unknown',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -243,8 +345,6 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                 ],
               ),
             ),
-            // Price info
-            PriceChart(),
           ],
         ),
       ),

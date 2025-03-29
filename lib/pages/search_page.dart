@@ -94,10 +94,12 @@ class _SearchPageState extends State<SearchPage> {
           "id": card['id'],
           "name": card['name'],
           "number": card['number'],
+          "artist": card['artist'],
           "hp": card['hp'],
           "rarity": card['rarity'],
           "types": card['types'],
-          "set": {"id": card['set']['id'], "name": card['set']['name'], "total": card['set']['total']},
+          "set": {"id": card['set']['id'], "name": card['set']['name'], 
+            "total": card['set']['total'], "releasedate": card['set']['releaseDate']},
           "images": {
             "small": card['images']['small'],
             "large": card['images']['large'],

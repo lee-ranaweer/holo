@@ -45,6 +45,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   html: ^0.15.5
   fl_chart: ^0.70.2
+  url_launcher: ^6.3.1
   uuid: ^4.5.1
 
 dev_dependencies:

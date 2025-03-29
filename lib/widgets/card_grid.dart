@@ -108,7 +108,7 @@ class CardGridItem extends ConsumerWidget {
                               ),
                             ),
                             Text(
-                              card['price'] != "N/A" ? "\$${card['price']}" : "N/A",
+                              card['price'] != "N/A" ? "\$${double.parse(card['price']).toStringAsFixed(2)}" : "N/A",
                               style: const TextStyle(
                                 color: Colors.green,
                                 fontSize: 9,
