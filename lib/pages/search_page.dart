@@ -32,6 +32,7 @@ class _SearchPageState extends State<SearchPage> {
 
     try {
       final fetchedCards = await fetchPokemonCards(query);
+      print(fetchedCards);
 
       // apply filter
       List<Map<String, dynamic>> filteredCards = [];
@@ -87,19 +88,25 @@ class _SearchPageState extends State<SearchPage> {
       return cards.map((card) {
         // Attempt to get the market price from the tcgplayer object.
         final price = card['tcgplayer']?['prices']?['holofoil']?['market'];
+        // price update
+        final priceUpdate = card['tcgplayer']?['updatedAt'];
         return {
           "id": card['id'],
           "name": card['name'],
+          "number": card['number'],
           "hp": card['hp'],
           "rarity": card['rarity'],
           "types": card['types'],
-          "set": {"id": card['set']['id'], "name": card['set']['name']},
+          "set": {"id": card['set']['id'], "name": card['set']['name'], "total": card['set']['total']},
           "images": {
             "small": card['images']['small'],
             "large": card['images']['large'],
           },
           "price": price != null ? price.toString() : "N/A",
+          "priceupdate": priceUpdate != null ? priceUpdate.toString() : "N/A",
+          "prices": card['tcgplayer']?['prices'],
           "tcgplayer": card['tcgplayer']?['url'],
+          "cardmarket": card['cardmarket']?['prices']?['trendPrice']
         };
       }).toList();
     } else {

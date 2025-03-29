@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:holo/widgets/price_chart.dart';
 import '../services/auth_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../providers/watchlist_provider.dart';
+import 'package:html/parser.dart' as parser;
+import 'package:http/http.dart' as http;
+import 'package:html/dom.dart' as dom;
 import '../providers/notifications_provider.dart'; // New import
 import '../providers/decks_provider.dart'; // Import decksProvider
 
@@ -24,6 +28,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
   void initState() {
     super.initState();
     _getCardExists();
+    _testScrape();
   }
 
   _getCardExists() async {
@@ -34,50 +39,70 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
     });
   }
 
+  _testScrape() async {
+    // print(widget.card!["priceupdate"]);
+    // print(widget.card!["prices"]);
+    // print(widget.card!['cardmarket']);
+    print(widget.card!["tcgplayer"]);
+
+    final response = await http.Client().get(Uri.parse(widget.card!['tcgplayer']));
+    print(response.statusCode);
+
+
+    dom.Document htmldom = dom.Document.html(response.body);
+    final titles = htmldom.querySelectorAll('div > h1')
+    .map((element) => element.innerHtml.trim())
+    .toList();
+
+    print(titles.length);
+    for (final title in titles) {
+      print(title);
+    }
+
+    if (response.statusCode == 200) {
+      // get html doc from response
+      var doc = parser.parse(response.body);
+      print(doc.body?.children[0].nextElementSibling?.localName);
+      try {
+        // scrape
+        var responseString1 = doc.getElementById("title");
+        
+        print(responseString1?.text);
+      }
+      catch (e) {
+        print('error');
+      }
+    } else {
+      print('no response');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Card Details',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        toolbarHeight: 50,
+      ),
       body: SafeArea(
-        child: Column(
+        child: ListView(
+          // shrinkWrap: true,
+          // padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.only(bottom: 100),
           children: [
-            // Top Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Stack(
-                children: [
-                  // Back Button
-                  Container(
-                    alignment: Alignment.topLeft,
-                    child: IconButton(
-                      onPressed: () => context.pop(context),
-                      icon: const Icon(Icons.arrow_back, size: 20),
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ),
-                  ),
-                  // Title
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Card Details',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
+            // Card Details
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(height: 12),
                   // Card Image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
@@ -88,17 +113,38 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  // Title & Price
-                  Text(
-                    widget.card!['name'],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                  // Card Info
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.card!['name'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        // card number in set
+                        Container(
+                          alignment: Alignment.bottomRight,
+                          child: Text(
+                            ' (${widget.card!['number']}/${widget.card!['set']['total']})',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: Row(
@@ -106,52 +152,58 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                       children: [
                         // Set Info
                         Flexible(
-                          flex: 1,
+                          flex: 3,
                           child: Column(
                             children: [
                               Text(
                                 'Set',
                                 style: TextStyle(
                                   color: Colors.grey.shade500,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                widget.card!['set']['name'] ?? 'Unknown',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  widget.card!['set']['name'] ?? 'Unknown',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
                         ),
                         // Rarity Info
                         Flexible(
-                          flex: 1,
+                          flex: 2,
                           child: Column(
                             children: [
                               Text(
                                 'Rarity',
                                 style: TextStyle(
                                   color: Colors.grey.shade500,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                widget.card!['rarity'] ?? 'Unknown',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  widget.card!['rarity'] ?? 'Unknown',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
@@ -165,19 +217,22 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                                 'Value',
                                 style: TextStyle(
                                   color: Colors.grey.shade500,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                "\$${widget.card!['price'] != "N/A" ? widget.card!['price'] : "N/A"}",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  widget.card!['price'] != "N/A" ? "\$${widget.card!['price']}" : "N/A",
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
@@ -188,6 +243,8 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                 ],
               ),
             ),
+            // Price info
+            PriceChart(),
           ],
         ),
       ),
@@ -197,6 +254,14 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             _cardExists ? const Text('In Collection (1)') : const Text('Options'),
         backgroundColor: Colors.grey.shade900,
         foregroundColor: Colors.teal.shade50,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.grey.shade800,
+            width: 1,
+            style: BorderStyle.solid
+          ),
+          borderRadius: BorderRadius.circular(28.0),
+        ),
         overlayOpacity: 0,
         icon: _cardExists ? Icons.check : Icons.add,
         children: [

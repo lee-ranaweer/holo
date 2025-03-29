@@ -27,11 +27,11 @@ class CardListItem extends ConsumerWidget {
         ),
       ),
       subtitle: Text(
-        '${card['set']['name'] ?? 'Unknown'} | ${card['rarity'] ?? 'Unknown'}',
+        '${card['set']['name'] ?? 'Unknown'} • ${card['rarity'] ?? 'Unknown'}',
         style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
       ),
       trailing: Text(
-        '\$${card['price']}',
+        card['price'] != "N/A" ? "\$${card['price']}" : "N/A",
         style: const TextStyle(
           color: Colors.green,
           fontSize: 16,
