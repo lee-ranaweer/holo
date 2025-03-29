@@ -11,42 +11,19 @@ class DecksPage extends ConsumerWidget {
     final decks = ref.watch(decksProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'My Decks',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            // Top Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      onPressed: () => context.pop(),
-                      icon: const Icon(Icons.arrow_back, size: 20),
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'My Decks',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
             const SizedBox(height: 16),
-
             // Decks Grid
             Expanded(
               child: Padding(

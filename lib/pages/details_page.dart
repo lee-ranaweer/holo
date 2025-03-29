@@ -89,7 +89,6 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        toolbarHeight: 50,
       ),
       body: SafeArea(
         child: ListView(
@@ -353,7 +352,8 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
         label:
             _cardExists ? const Text('In Collection (1)') : const Text('Options'),
         backgroundColor: Colors.grey.shade900,
-        foregroundColor: Colors.teal.shade50,
+        foregroundColor: 
+            _cardExists ? Colors.teal.shade50 : Colors.teal.shade200,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: Colors.grey.shade800,
@@ -365,58 +365,6 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
         overlayOpacity: 0,
         icon: _cardExists ? Icons.check : Icons.add,
         children: [
-          SpeedDialChild(
-            child: const Icon(Icons.playlist_add),
-            backgroundColor: Colors.grey.shade900,
-            foregroundColor: Colors.teal.shade200,
-            label: 'Add to Deck',
-            onTap: () async {
-              // Retrieve current decks from the provider
-              final decks = ref.read(decksProvider);
-              if (decks.isEmpty) {
-                Fluttertoast.showToast(
-                  msg: "No decks available. Please create a deck first.",
-                  gravity: ToastGravity.CENTER,
-                  textColor: Colors.teal.shade50,
-                );
-                return;
-              }
-              // Show a bottom sheet to select a deck
-              final selectedDeckId = await showModalBottomSheet<String>(
-                context: context,
-                backgroundColor: Colors.grey.shade900,
-                builder: (context) {
-                  return ListView.builder(
-                    itemCount: decks.length,
-                    itemBuilder: (context, index) {
-                      final deck = decks[index];
-                      return ListTile(
-                        title: Text(
-                          deck.name,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        onTap: () {
-                          Navigator.pop(context, deck.id);
-                        },
-                      );
-                    },
-                  );
-                },
-              );
-              // If a deck was selected, add the card to that deck
-              if (selectedDeckId != null) {
-                ref
-                    .read(decksProvider.notifier)
-                    .addCardToDeck(selectedDeckId, widget.card!);
-                Fluttertoast.showToast(
-                  msg: "${widget.card!['name']} added to deck!",
-                  gravity: ToastGravity.CENTER,
-                  textColor: Colors.teal.shade50,
-                );
-              }
-            },
-          ),
-
           // Add to Watchlist Button
           SpeedDialChild(
             child: const Icon(Icons.visibility_outlined),
@@ -445,7 +393,92 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             // Button should remove from watchlist
           ),
 
-          // Add multiple of the same card
+          // Add to Collection Button (if not already in collection)
+          if (!_cardExists)
+            SpeedDialChild(
+              child: const Icon(Icons.add),
+              backgroundColor: Colors.grey.shade900,
+              foregroundColor: Colors.teal.shade200,
+              label: 'Add to Collection',
+              onTap: () async {
+                final collectionService = ref.read(collectionServiceProvider);
+                await collectionService.addCard(widget.card!);
+                // Add a notification for the card that was added
+                ref
+                    .read(notificationsProvider.notifier)
+                    .addNotification(
+                      NotificationItem(
+                        title: "Card Added",
+                        subtitle:
+                            "${widget.card!['name']} was added to your collection",
+                        time: DateTime.now(),
+                      ),
+                    );
+                Fluttertoast.showToast(
+                  msg: "Card added to collection!",
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.teal.shade50,
+                );
+                _getCardExists();
+              },
+            ),
+
+          // Add to Deck Button (if in collection)
+          if (_cardExists)
+            SpeedDialChild(
+              child: const Icon(Icons.playlist_add),
+              backgroundColor: Colors.grey.shade900,
+              foregroundColor: Colors.teal.shade200,
+              label: 'Add to Deck',
+              onTap: () async {
+                // Retrieve current decks from the provider
+                final decks = ref.read(decksProvider);
+                if (decks.isEmpty) {
+                  Fluttertoast.showToast(
+                    msg: "No decks available. Please create a deck first.",
+                    gravity: ToastGravity.CENTER,
+                    textColor: Colors.teal.shade50,
+                    toastLength: Toast.LENGTH_LONG
+                  );
+                  return;
+                }
+                // Show a bottom sheet to select a deck
+                final selectedDeckId = await showModalBottomSheet<String>(
+                  context: context,
+                  backgroundColor: Colors.grey.shade900,
+                  builder: (context) {
+                    return ListView.builder(
+                      itemCount: decks.length,
+                      itemBuilder: (context, index) {
+                        final deck = decks[index];
+                        return ListTile(
+                          title: Text(
+                            deck.name,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context, deck.id);
+                          },
+                        );
+                      },
+                    );
+                  },
+                );
+                // If a deck was selected, add the card to that deck
+                if (selectedDeckId != null) {
+                  ref
+                      .read(decksProvider.notifier)
+                      .addCardToDeck(selectedDeckId, widget.card!);
+                  Fluttertoast.showToast(
+                    msg: "${widget.card!['name']} added to deck!",
+                    gravity: ToastGravity.CENTER,
+                    textColor: Colors.teal.shade50,
+                  );
+                }
+              },
+            ),
+
+          // Add multiple of the same card (if in collection)
           if (_cardExists)
             SpeedDialChild(
               child: const Icon(Icons.add_circle_outline),
@@ -526,7 +559,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
               },
             ),
 
-          // Remove from Collection Button (if the card exists)
+          // Remove from Collection Button (if in collection)
           if (_cardExists)
             SpeedDialChild(
               child: const Icon(Icons.delete_outline),
@@ -581,36 +614,6 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                       );
                     },
                   ),
-            ),
-
-          // Add to Collection Button (if not already in collection)
-          if (!_cardExists)
-            SpeedDialChild(
-              child: const Icon(Icons.add),
-              backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.teal.shade200,
-              label: 'Add to Collection',
-              onTap: () async {
-                final collectionService = ref.read(collectionServiceProvider);
-                await collectionService.addCard(widget.card!);
-                // Add a notification for the card that was added
-                ref
-                    .read(notificationsProvider.notifier)
-                    .addNotification(
-                      NotificationItem(
-                        title: "Card Added",
-                        subtitle:
-                            "${widget.card!['name']} was added to your collection",
-                        time: DateTime.now(),
-                      ),
-                    );
-                Fluttertoast.showToast(
-                  msg: "Card added to collection!",
-                  gravity: ToastGravity.CENTER,
-                  textColor: Colors.teal.shade50,
-                );
-                _getCardExists();
-              },
             ),
         ],
       ),

@@ -12,7 +12,10 @@ class NotificationsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text(
           'Notifications',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         backgroundColor: Colors.black,
         elevation: 0,

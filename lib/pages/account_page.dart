@@ -17,7 +17,33 @@ class AccountPage extends ConsumerWidget {
     final totalValue = ref.watch(portfolioValueProvider);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: Text(
+          'My Profile',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await ref.read(authServiceProvider).signOut();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              visualDensity: VisualDensity.compact,
+            ),
+            child: Text(
+              'Sign Out',
+              style: TextStyle(
+                color: Colors.teal.shade50,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -25,8 +51,8 @@ class AccountPage extends ConsumerWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.only(
-                top: 24,
-                bottom: 48,
+                top: 0,
+                bottom: 24,
                 left: 16,
                 right: 16,
               ),
@@ -40,53 +66,27 @@ class AccountPage extends ConsumerWidget {
                   bottom: Radius.circular(24),
                 ),
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      'Profile',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    child: TextButton(
-                      onPressed: () async {
-                        await ref.read(authServiceProvider).signOut();
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        visualDensity: VisualDensity.compact,
-                      ),
-                      child: const Text(
-                        'Sign Out',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
-
             // -- Profile Section: Avatar, Username and Email
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              padding: const EdgeInsets.only(
+                top: 0,
+                bottom: 48,
+                left: 16,
+                right: 16,
+              ),              
               child: Column(
                 children: [
                   // Avatar with white border effect
                   CircleAvatar(
-                    radius: 44,
+                    radius: 38,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
-                      radius: 40,
+                      radius: 36,
                       backgroundColor: Colors.grey.shade800,
                       child: const Icon(
                         Icons.person,
-                        size: 36,
+                        size: 32,
                         color: Colors.white,
                       ),
                     ),
@@ -152,7 +152,7 @@ class AccountPage extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Thank you for trading with holo!',
+                'Thank you for trading with Holo!',
                 style: TextStyle(color: Colors.grey.shade500),
               ),
             ),
