@@ -133,26 +133,29 @@ class _SearchPageState extends State<SearchPage> {
                 children: [
                   // Search Bar
                   Expanded(
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      cursorColor: Colors.white,
-                      onSubmitted: _searchCards,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey.shade900,
-                        hintText: 'Search Pokémon Cards...',
-                        hintStyle: TextStyle(color: Colors.grey.shade600),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 16.0,
+                    child: SizedBox(
+                      height: 40,
+                      child: TextField(
+                        style: const TextStyle(color: Colors.white),
+                        cursorColor: Colors.white,
+                        onSubmitted: _searchCards,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade900,
+                          hintText: 'Search Pokémon cards...',
+                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12.0,
+                            horizontal: 16.0,
+                          ),
                         ),
                       ),
                     ),
@@ -281,11 +284,13 @@ class _SearchPageState extends State<SearchPage> {
               // Loading Indicator
               Align(
                 alignment: Alignment.center,
-                child: const FittedBox(
+                child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(12.0),
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: Colors.grey.shade500,
+                    ),
                   ),
                 ),
               ),

@@ -19,6 +19,14 @@ class DecksNotifier extends StateNotifier<List<DeckItem>> {
   DecksNotifier() : super([]);
 
   final _uuid = const Uuid();
+  
+  String _curDeck = "";
+  String get curDeck => _curDeck;
+
+  set curDeck(String deck) {
+    _curDeck = deck;
+  } 
+
 
   // Create a new deck
   void addDeck(String deckName) {

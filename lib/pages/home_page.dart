@@ -194,7 +194,7 @@ class _WatchlistListWidgetState extends State<WatchlistListWidget> {
               widget.watchlist.isEmpty
                   ? Center(
                     child: Text(
-                      'No items in watchlist',
+                      'No cards in watchlist',
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 16,

@@ -25,7 +25,7 @@ class DeckDetailsPage extends ConsumerWidget {
           deck.cards.isEmpty
               ? Center(
                 child: Text(
-                  'No cards added yet.',
+                  'No cards in ${deck.name}',
                   style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
                 ),
               )

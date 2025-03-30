@@ -122,7 +122,7 @@ class DecksPage extends ConsumerWidget {
                             child: Icon(
                               Icons.add,
                               color: Colors.white,
-                              size: 48,
+                              size: 30,
                             ),
                           ),
                         ),
@@ -132,7 +132,9 @@ class DecksPage extends ConsumerWidget {
                       final deck = decks[index - 1];
                       return GestureDetector(
                         onTap: () {
-                          context.push('/decks/${deck.id}');
+                          // context.push('/decks/${deck.id}');
+                          ref.read(decksProvider.notifier).curDeck = deck.id;
+                          Navigator.pop(context);
                         },
                         child: Container(
                           decoration: BoxDecoration(

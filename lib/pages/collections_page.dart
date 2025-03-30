@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:holo/pages/decks_page.dart';
 import 'package:holo/pages/details_page.dart';
+import 'package:holo/providers/decks_provider.dart';
 import 'package:holo/widgets/card_list.dart';
 import 'package:holo/widgets/collection_filter.dart';
 import '../services/auth_service.dart';
@@ -23,7 +24,17 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
     final collectionAsync = ref.watch(collectionProvider);
     final filteredCollectionAsync = ref.watch(filteredCollectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
-    final cardqty = ref.watch(collectionProvider).value?.length;
+
+    // Find the deck by id
+    final deckId = ref.read(decksProvider.notifier).curDeck;
+    final decks = ref.watch(decksProvider);
+    final deck = decks.firstWhere(
+      (d) => d.id == deckId,
+      orElse: () => DeckItem(id: '', name: 'All cards'),
+    );
+    final totalCards = 
+      deckId != "" ? deck.cards.length : ref.watch(collectionProvider).value?.length;
+
 
     return Scaffold(
       body: SafeArea(
@@ -32,13 +43,45 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                "My Collection",
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    "My Collection",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Spacer(),
+                  // Decks Button (matches height and holo style)
+                  SizedBox(
+                    height: 34,
+                    child: TextButton(
+                      onPressed: () {
+                        context.push('/decks');
+                      },
+                      style: TextButton.styleFrom(
+                        // backgroundColor: Colors.grey.shade900,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          // side: BorderSide(
+                          //   color: Colors.grey.shade800,
+                          //   width: 1,
+                          // ),
+                        ),
+                      ),
+                      child: Text(
+                        'Decks',
+                        style: TextStyle(
+                          color: Colors.teal.shade200, // Holo color match
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             // Search, filter, and view mode
@@ -54,7 +97,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                   Expanded(
                     flex: 3,
                     child: SizedBox(
-                      height: 48, // Set consistent height
+                      height: 40, // Set consistent height
                       child: TextField(
                         style: const TextStyle(color: Colors.white),
                         cursorColor: Colors.white,
@@ -82,36 +125,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-
-                  // Decks Button (matches height and holo style)
-                  SizedBox(
-                    height: 48,
-                    child: TextButton(
-                      onPressed: () {
-                        context.push('/decks');
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.grey.shade900,
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          side: BorderSide(
-                            color: Colors.grey.shade800,
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Decks',
-                        style: TextStyle(
-                          color: Colors.teal.shade200, // Holo color match
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-
+                  // const SizedBox(width: 8),
                   const SizedBox(width: 8),
 
                   // Filter icon
@@ -164,14 +178,30 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
             // current deck and qty
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Showing: All cards ($cardqty)',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade500,
-                ),
-              ),
+              child: Row(
+                children: [
+                  Text(
+                    'Showing: ${deck.name} ($totalCards)',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  if (deckId != "")
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          ref.read(decksProvider.notifier).curDeck = "";
+                        });
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 4),
+                        child: const Icon(Icons.close, size: 16),
+                      )
+                    ),
+                ],
+              )
             ),
 
             // Divider for separation
@@ -182,11 +212,18 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
 
             // Card collection
             Expanded(
-              child: filteredCollectionAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(child: Text('Error: $error')),
-                data: (cards) => _buildCollectionList(cards),
-              ),
+              // fix this later
+              // child: filteredCollectionAsync.when(
+              //   loading: () => const Center(child: CircularProgressIndicator()),
+              //   error: (error, _) => Center(child: Text('Error: $error')),
+              //   data: (cards) => _buildCollectionList(cards),
+              // ),
+              child: _buildCollectionList(
+                deckId != "" 
+                  ? deck.cards
+                  : ref.watch(collectionProvider).value!
+                  , deckId
+                ),
             ),
           ],
         ),
@@ -212,11 +249,11 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
     );
   }
 
-  Widget _buildCollectionList(List<Map<String, dynamic>> cards) {
+  Widget _buildCollectionList(List<Map<String, dynamic>> cards, final deckId) {
     if (cards.isEmpty) {
       return Center(
         child: Text(
-          'No cards added yet.',
+          deckId != "" ? 'No cards in deck' : 'No cards in collection',
           style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
         ),
       );

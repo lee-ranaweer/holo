@@ -44,10 +44,10 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
     // print(widget.card!["priceupdate"]);
     // print(widget.card!["prices"]);
     // print(widget.card!['cardmarket']);
-    print(widget.card!["tcgplayer"]);
+    // print(widget.card!["tcgplayer"]);
 
     final response = await http.Client().get(Uri.parse(widget.card!['tcgplayer']));
-    print(response.statusCode);
+    // print(response.statusCode);
 
 
     dom.Document htmldom = dom.Document.html(response.body);
@@ -55,20 +55,20 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
     .map((element) => element.innerHtml.trim())
     .toList();
 
-    print(titles.length);
-    for (final title in titles) {
-      print(title);
-    }
+    // print(titles.length);
+    // for (final title in titles) {
+    //   print(title);
+    // }
 
     if (response.statusCode == 200) {
       // get html doc from response
       var doc = parser.parse(response.body);
-      print(doc.body?.children[0].nextElementSibling?.localName);
+      // print(doc.body?.children[0].nextElementSibling?.localName);
       try {
         // scrape
         var responseString1 = doc.getElementById("title");
         
-        print(responseString1?.text);
+        // print(responseString1?.text);
       }
       catch (e) {
         print('error');
