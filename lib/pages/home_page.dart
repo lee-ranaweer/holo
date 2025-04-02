@@ -39,14 +39,14 @@ class HomePage extends ConsumerWidget {
                       letterSpacing: 1.2,
                     ),
                   ),
-                  Text(
-                    "+220.4",
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  // Text(
+                  //   "+220.4",
+                  //   style: const TextStyle(
+                  //     color: Colors.green,
+                  //     fontSize: 18,
+                  //     fontWeight: FontWeight.w600,
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 20),

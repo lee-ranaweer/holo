@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/card_widgets.dart';
@@ -124,6 +123,11 @@ class CollectionsPage extends ConsumerWidget  {
     final filteredCollectionAsync = ref.watch(filteredCollectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
 
+      // For now, a hardcoded list of decks
+    const decks = ['All Decks', 'Deck 1', 'Deck 2'];
+    String selectedDeck = decks.first;
+
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -138,6 +142,76 @@ class CollectionsPage extends ConsumerWidget  {
                   color: Colors.white,
                   letterSpacing: 1.2,
                 ),
+              ),
+            ),
+
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: selectedDeck,
+                          dropdownColor: Colors.grey.shade900,
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white,
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                          onChanged: (value) {
+                            // Update deck selection here.
+                            // For now, simply print the value.
+                            debugPrint('Selected deck: $value');
+                          },
+                          items: decks
+                              .map(
+                                (deck) => DropdownMenuItem<String>(
+                                  value: deck,
+                                  child: Text(deck),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Add Deck Button
+                  GestureDetector(
+                    onTap: () {
+                      // Add deck logic here (UI only for now)
+                      debugPrint('Add deck tapped');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.2),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        size: 28,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
