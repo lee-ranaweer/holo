@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:holo/providers/notifications_provider.dart';
+import 'package:holo/services/auth_service.dart';
 import 'package:holo/widgets/card_list.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/card_grid.dart';
 
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
 
   @override
-  _SearchPageState createState() => _SearchPageState();
+  SearchPageState createState() => SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class SearchPageState extends ConsumerState<SearchPage> {
   List<Map<String, dynamic>> _cards = [];
   bool _isLoading = false;
   bool _search = false;
@@ -24,8 +29,10 @@ class _SearchPageState extends State<SearchPage> {
 
   void toggleSelectMode() {
     setState(() {
+      _selectMode = !_selectMode;
       if (!_selectMode) {
-        _selectMode = true;
+        // clear selection
+        _selectedCards.clear();
       }
     });
   }
@@ -133,111 +140,133 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        toolbarHeight: 0, //no padding!
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search, filter, and view mode
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 12.0
-              ),
-              child: Row(
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              color: Colors.black,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Search Bar
-                  Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: TextField(
-                        style: const TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
-                        onSubmitted: _searchCards,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade900,
-                          hintText: 'Search Pokémon cards...',
-                          hintStyle: TextStyle(color: Colors.grey.shade600),
-                          prefixIcon: const Icon(
-                            Icons.search,
+                  if (_selectMode)
+                    Row(
+                      children: [
+                        // multi-select
+                        Text(
+                          "${_selectedCards.length} selected",
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 16.0,
+                        ),
+                        Spacer(),
+                        // cancel
+                        IconButton(
+                          onPressed: () {
+                            toggleSelectMode();
+                          },
+                          icon: const Icon(Icons.close, size: 20),
+                        ),
+                      ],
+                    ),
+
+                   // Search, filter, and view mode
+                   Row(
+                    children: [
+                      // Search Bar
+                      Expanded(
+                        child: SizedBox(
+                          height: 40,
+                          child: TextField(
+                            style: const TextStyle(color: Colors.white),
+                            cursorColor: Colors.white,
+                            onSubmitted: _searchCards,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade900,
+                              hintText: 'Search Pokémon cards...',
+                              hintStyle: TextStyle(color: Colors.grey.shade600),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Filter
-                  IconButton(
-                    onPressed: () {
-                      _showFilter(context);
-                    },
-                    icon: const Icon(Icons.filter_alt_outlined, size: 20),
-                    style: TextButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                  ),
-                  // List/Grid mode
-                  _gridMode 
-                  ? IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _gridMode = false;
-                        });
-                      },
-                      icon: const Icon(Icons.list, size: 20),
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      const SizedBox(width: 8),
+
+                      // Filter
+                      IconButton(
+                        onPressed: () {
+                          _showFilter(context);
+                        },
+                        icon: const Icon(Icons.filter_alt_outlined, size: 20),
+                        style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                       ),
-                    )
-                  :
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _gridMode = true;
-                      });
-                    },
-                    icon: const Icon(Icons.grid_on, size: 20),
-                    style: TextButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+
+                      // List/Grid mode
+                      _gridMode 
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _gridMode = false;
+                            });
+                          },
+                          icon: const Icon(Icons.list, size: 20),
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _gridMode = true;
+                            });
+                          },
+                          icon: const Icon(Icons.grid_on, size: 20),
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        )
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // qty
+                  if (_search)
+                    Text(
+                      'Showing: $_cardqty result(s)',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
-                  )
+                  
+                  // Divider for separation
+                  if (_search)
+                    Divider(color: Colors.grey.shade800, thickness: 1),
                 ],
               ),
             ),
-
-            // qty
-            if (_search)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Showing: $_cardqty result(s)',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade500,
-                  ),
-                ),
-              ),
-
-            // Divider for separation
-            if (_search)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Divider(color: Colors.grey.shade800, thickness: 1),
-              ),
 
             // Error Message
             if (_errorMessage.isNotEmpty)
@@ -263,18 +292,17 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               )
-              :
               // No Cards
-              _cards.isEmpty && _search && !_isLoading
+              : _cards.isEmpty && _search && !_isLoading
               ? Center(
-                child: Text(
-                  'No cards found',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 16,
+                  child: Text(
+                    'No cards found',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-              )
+                )
               :
               // Card List
               !_isLoading
@@ -288,8 +316,7 @@ class _SearchPageState extends State<SearchPage> {
                     itemCount: _cards.length,
                     itemBuilder: (context, index) => CardGridItem(card: _cards[index]),
                   )
-                  :
-                  ListView.builder(
+                : ListView.builder(
                     itemCount: _cards.length,
                     itemBuilder: (context, index) {
                       return CardListItem(index: index, card: _cards[index], 
@@ -297,24 +324,74 @@ class _SearchPageState extends State<SearchPage> {
                           extraCallback: refresh);
                     }
                   )
-              :
               // Loading Indicator
-              Align(
-                alignment: Alignment.center,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: CircularProgressIndicator(
-                      color: Colors.grey.shade500,
+              : Align(
+                  alignment: Alignment.center,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: CircularProgressIndicator(
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ),
           ],
         ),
       ),
+      floatingActionButton:
+      !_selectMode || _selectedCards.isEmpty
+      ?
+      null
+      // Multi-select options
+      : SpeedDial(
+          label: const Text('Options'),
+          backgroundColor: Colors.grey.shade900,
+          foregroundColor: Colors.teal.shade200,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.grey.shade800,
+              width: 1,
+              style: BorderStyle.solid
+            ),
+            borderRadius: BorderRadius.circular(28.0),
+          ),
+          overlayOpacity: 0,
+          icon: Icons.add,
+          children: [
+            SpeedDialChild(
+              child: const Icon(Icons.add),
+              backgroundColor: Colors.grey.shade900,
+              foregroundColor: Colors.teal.shade200,
+              label: 'Add to Collection',
+              onTap: () async {
+                final collectionService = ref.read(collectionServiceProvider);
+                for (final card in _selectedCards) {
+                  await collectionService.addCard(card);
+                  // Add a notification for the card that was added
+                  ref
+                  .read(notificationsProvider.notifier)
+                  .addNotification(
+                    NotificationItem(
+                      title: "Card Added",
+                      subtitle:
+                          "$card was added to your collection",
+                      time: DateTime.now(),
+                    ),
+                  );
+                }
+                Fluttertoast.showToast(
+                  msg: "${_selectedCards.length} cards added to collection!",
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.teal.shade50,
+                );
+                toggleSelectMode();
+              },
+            ),
+          ],
+        )
     );
   }
 

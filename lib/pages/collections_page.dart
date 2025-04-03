@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:holo/pages/decks_page.dart';
 import 'package:holo/pages/details_page.dart';
@@ -110,6 +111,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               color: Colors.black,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Search, filter, and view mode
                   // CollectionsPage snippet
@@ -139,10 +141,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                                 borderRadius: BorderRadius.circular(12.0),
                                 borderSide: BorderSide.none,
                               ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 0.0,
-                                horizontal: 16.0,
-                              ),
+                              contentPadding: const EdgeInsets.symmetric(),
                             ),
                           ),
                         ),
@@ -169,29 +168,29 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                       // List/Grid icon
                       _gridMode
                       ? IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _gridMode = false;
-                          });
-                        },
-                        icon: const Icon(Icons.list, size: 20),
-                        style: TextButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      )
+                          onPressed: () {
+                            setState(() {
+                              _gridMode = false;
+                            });
+                          },
+                          icon: const Icon(Icons.list, size: 20),
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        )
                       : IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _gridMode = true;
-                          });
-                        },
-                        icon: const Icon(Icons.grid_on, size: 20),
-                        style: TextButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          onPressed: () {
+                            setState(() {
+                              _gridMode = true;
+                            });
+                          },
+                          icon: const Icon(Icons.grid_on, size: 20),
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -223,10 +222,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                   ),
 
                   // Divider for separation
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Divider(color: Colors.grey.shade800, thickness: 1),
-                  ),
+                  Divider(color: Colors.grey.shade800, thickness: 1),
                 ],
               ),
             ),
@@ -249,9 +245,9 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
           ],
         ),
       ),
-      // Add new card to collection
       floatingActionButton: 
       !_selectMode 
+      // Add new card to collection
       ? FloatingActionButton.extended(
           onPressed: () {
             context.go('/search');
@@ -269,6 +265,9 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
           ),
           icon: Icon(Icons.add),
         )
+      : _selectedCards.isEmpty
+      ? null
+      // Multi-select options
       : SpeedDial(
           label: const Text('Options'),
           backgroundColor: Colors.grey.shade900,
@@ -284,7 +283,62 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
           overlayOpacity: 0,
           icon: Icons.add,
           children: [
-
+            SpeedDialChild(
+              child: const Icon(Icons.delete_outline),
+              backgroundColor: Colors.grey.shade900,
+              foregroundColor: Colors.red.shade600,
+              label: 'Remove card(s) from collection',
+              onTap:
+                  () => showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.grey.shade900,
+                        titleTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                        contentTextStyle: const TextStyle(color: Colors.white),
+                        title: const Text("Warning"),
+                        content: const Text(
+                          "Are you sure you want to remove these cards from your collection?",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'No',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              final collectionService = ref.read(
+                                collectionServiceProvider,
+                              );
+                              for (final card in _selectedCards) {
+                                await collectionService.removeCard(card);
+                              }
+                              Fluttertoast.showToast(
+                                msg: "${_selectedCards.length} cards removed from collection!",
+                                gravity: ToastGravity.CENTER,
+                                textColor: Colors.teal.shade50,
+                              );
+                              toggleSelectMode();
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+            ),
           ],
         )
     );
@@ -302,22 +356,22 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
 
     return _gridMode
         ? GridView.builder(
-          padding: const EdgeInsets.all(3),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 0.55, // Adjusted aspect ratio
-          ),
-          itemCount: cards.length,
-          itemBuilder: (context, index) => CardGridItem(card: cards[index]),
-        )
+            padding: const EdgeInsets.all(5),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 0.55, // Adjusted aspect ratio
+            ),
+            itemCount: cards.length,
+            itemBuilder: (context, index) => CardGridItem(card: cards[index]),
+          )
         : ListView.builder(
-          itemCount: cards.length,
-          itemBuilder: (context, index) {
-            return CardListItem(key: ValueKey(index), index: index, card: cards[index], 
-              callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards, 
-                extraCallback: refresh);
-          },
-        );
+            itemCount: cards.length,
+            itemBuilder: (context, index) {
+              return CardListItem(key: ValueKey(index), index: index, card: cards[index], 
+                callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards, 
+                  extraCallback: refresh);
+            },
+          );
   }
 }
 

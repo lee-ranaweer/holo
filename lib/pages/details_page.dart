@@ -565,7 +565,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
               child: const Icon(Icons.delete_outline),
               backgroundColor: Colors.grey.shade900,
               foregroundColor: Colors.red.shade600,
-              label: 'Remove from Collection',
+              label: 'Remove from collection',
               onTap:
                   () => showDialog(
                     context: context,
@@ -602,6 +602,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                                 gravity: ToastGravity.CENTER,
                                 textColor: Colors.teal.shade50,
                               );
+                              // update card detail state
                               _getCardExists();
                               Navigator.pop(context);
                             },
