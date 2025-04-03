@@ -41,23 +41,34 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
   @override
   Widget build(BuildContext context) {
     final collectionAsync = ref.watch(collectionProvider);
-    final filteredCollectionAsync = ref.watch(filteredCollectionProvider);
     final totalValue = ref.watch(portfolioValueProvider);
+
 
     // Find the deck by id
     final deckId = ref.read(decksProvider.notifier).curDeck;
-    final decks = ref.watch(decksProvider);
-    final deck = decks.maybeWhen(
-      data: (decksList) => decksList.firstWhere(
-        (d) => d.id == deckId,
-        orElse: () => DeckItem(id: '', name: 'All cards', cards: []),
-      ),
+  final decks = ref.watch(decksProvider);
+  final deck = decks.maybeWhen(
+    data: (decksList) => decksList.firstWhere(
+      (d) => d.id == deckId,
       orElse: () => DeckItem(id: '', name: 'All cards', cards: []),
-    );
+    ),
+    orElse: () => DeckItem(id: '', name: 'All cards', cards: []),
+  );
 
 
-    final totalCards = 
-      deckId != "" ? deck.cards.length : ref.watch(collectionProvider).value?.length;
+
+    final allCards = deckId != "" 
+      ? deck.cards 
+      : ref.watch(collectionProvider).value ?? [];
+
+    final query = ref.watch(searchQueryProvider).toLowerCase().trim();
+  final filteredCards = allCards.where((card) {
+    return query.isEmpty ||
+        card['name'].toLowerCase().contains(query);
+  }).toList();
+
+  final totalCards = filteredCards.length;
+
 
     return Scaffold(
       appBar: AppBar(
@@ -233,20 +244,10 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
             ),
 
             // Card collection
-            Expanded(
-              // TODO: fix filtering and search
-              // child: filteredCollectionAsync.when(
-              //   loading: () => const Center(child: CircularProgressIndicator()),
-              //   error: (error, _) => Center(child: Text('Error: $error')),
-              //   data: (cards) => _buildCollectionList(cards),
-              // ),
-              child: _buildCollectionList(
-                deckId != "" 
-                  ? deck.cards
-                  : ref.watch(collectionProvider).value!
-                  , deckId
-                ),
-            ),
+          Expanded(
+            child: _buildCollectionList(filteredCards, deckId),
+          ),
+
           ],
         ),
       ),
