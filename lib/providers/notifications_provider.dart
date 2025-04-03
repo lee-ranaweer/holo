@@ -19,6 +19,11 @@ class NotificationsNotifier extends StateNotifier<List<NotificationItem>> {
     // Prepend the new notification so the most recent appears at the top.
     state = [notification, ...state];
   }
+
+    void clearNotifications() {
+    state = [];
+  }
+
 }
 
 final notificationsProvider =

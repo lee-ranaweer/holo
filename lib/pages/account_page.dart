@@ -28,7 +28,7 @@ class AccountPage extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              await ref.read(authServiceProvider).signOut();
+              await ref.read(authServiceProvider).signOut(ref);
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.white,

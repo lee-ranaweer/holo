@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../providers/notifications_provider.dart';
 
 // Access point for authentication methods
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
@@ -116,7 +117,7 @@ class CollectionService {
   }
 }
 
-final collectionProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
+final collectionProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final user = ref.watch(authStateProvider).value;
   if (user == null) return const Stream.empty();
 
@@ -128,16 +129,17 @@ final collectionProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 });
 
-  final portfolioValueProvider = Provider<double>((ref) {
-    final collection = ref.watch(collectionProvider);
-    return collection.maybeWhen(
-      data: (cards) => cards.fold(0.0, (total, card) {
-        final price = double.tryParse(card['price'] ?? '0') ?? 0.0;
-        return total + price;
-      }),
-      orElse: () => 0.0,
-    );
-  });
+final portfolioValueProvider = Provider.autoDispose<double>((ref) {
+  final collection = ref.watch(collectionProvider);
+  return collection.maybeWhen(
+    data: (cards) => cards.fold(0.0, (total, card) {
+      final price = double.tryParse(card['price'] ?? '0') ?? 0.0;
+      return total + price;
+    }),
+    orElse: () => 0.0,
+  );
+});
+
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -174,8 +176,16 @@ class AuthService {
   }
 
   // Signout
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
+Future<void> signOut(WidgetRef ref) async {
+  await _auth.signOut();
   
+  // Invalidate all user-related providers
+  ref.invalidate(collectionProvider);
+  ref.invalidate(authStateProvider);
+  ref.invalidate(portfolioValueProvider);
+  ref.read(notificationsProvider.notifier).clearNotifications();
+
+
+
+}  
 }

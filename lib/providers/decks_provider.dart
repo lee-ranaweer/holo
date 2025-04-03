@@ -23,7 +23,6 @@ class DeckService {
   });
 }
 
-
   Future<void> addCardToDeck({
   required String deckId,
   required Map<String, dynamic> card,
@@ -124,11 +123,8 @@ class DecksNotifier extends StateNotifier<AsyncValue<List<DeckItem>>> {
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
-
-  
-
 }
 
-final decksProvider = StateNotifierProvider<DecksNotifier, AsyncValue<List<DeckItem>>>(
+final decksProvider = StateNotifierProvider.autoDispose<DecksNotifier, AsyncValue<List<DeckItem>>>(
   (ref) => DecksNotifier(ref),
 );
