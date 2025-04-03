@@ -410,58 +410,63 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
 
           // Add to Deck Button (if in collection)
           if (_cardExists)
-            SpeedDialChild(
-              child: const Icon(Icons.playlist_add),
-              backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.amberAccent,
-              label: 'Add to a deck',
-              onTap: () async {
-                // Retrieve current decks from the provider
-                final decks = ref.read(decksProvider);
-                if (decks.isEmpty) {
-                  Fluttertoast.showToast(
-                    msg: "No decks available. Please create a deck first.",
-                    gravity: ToastGravity.CENTER,
-                    textColor: Colors.teal.shade50,
-                    toastLength: Toast.LENGTH_LONG
-                  );
-                  return;
-                }
-                // Show a bottom sheet to select a deck
-                final selectedDeckId = await showModalBottomSheet<String>(
-                  context: context,
-                  backgroundColor: Colors.grey.shade900,
-                  builder: (context) {
-                    return ListView.builder(
-                      itemCount: decks.length,
-                      itemBuilder: (context, index) {
-                        final deck = decks[index];
-                        return ListTile(
-                          title: Text(
-                            deck.name,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context, deck.id);
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-                // If a deck was selected, add the card to that deck
-                if (selectedDeckId != null) {
-                  ref
-                      .read(decksProvider.notifier)
-                      .addCardToDeck(selectedDeckId, widget.card!);
-                  Fluttertoast.showToast(
-                    msg: "${widget.card!['name']} added to deck!",
-                    gravity: ToastGravity.CENTER,
-                    textColor: Colors.teal.shade50,
-                  );
-                }
-              },
-            ),
+SpeedDialChild(
+  child: const Icon(Icons.playlist_add),
+  backgroundColor: Colors.grey.shade900,
+  foregroundColor: Colors.amberAccent,
+  label: 'Add to a deck',
+  onTap: () async {
+    final decksAsync = ref.read(decksProvider);
+
+    final isEmpty = decksAsync.maybeWhen(
+      data: (decks) => decks.isEmpty,
+      orElse: () => true,
+    );
+
+    if (isEmpty) {
+      Fluttertoast.showToast(
+        msg: "No decks available. Please create a deck first.",
+        gravity: ToastGravity.CENTER,
+        textColor: Colors.teal.shade50,
+        toastLength: Toast.LENGTH_LONG
+      );
+      return;
+    }
+
+    final selectedDeckId = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.grey.shade900,
+      builder: (context) {
+        return decksAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => Center(child: Text('Error: $error')),
+          data: (decks) => ListView.builder(
+            itemCount: decks.length,
+            itemBuilder: (context, index) {
+              final deck = decks[index];
+              return ListTile(
+                title: Text(
+                  deck.name,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                onTap: () => Navigator.pop(context, deck.id),
+              );  // Added missing parenthesis here
+            },
+          ),
+        );
+      },
+    );
+
+    if (selectedDeckId != null) {
+      ref.read(decksProvider.notifier).addCardToDeck(selectedDeckId, widget.card!);
+      Fluttertoast.showToast(
+        msg: "${widget.card!['name']} added to deck!",
+        gravity: ToastGravity.CENTER,
+        textColor: Colors.teal.shade50,
+      );
+    }
+  },
+),
 
           // Remove from Collection Button (if in collection)
           if (_cardExists)

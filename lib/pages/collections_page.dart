@@ -47,10 +47,15 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
     // Find the deck by id
     final deckId = ref.read(decksProvider.notifier).curDeck;
     final decks = ref.watch(decksProvider);
-    final deck = decks.firstWhere(
-      (d) => d.id == deckId,
-      orElse: () => DeckItem(id: '', name: 'All cards'),
+    final deck = decks.maybeWhen(
+      data: (decksList) => decksList.firstWhere(
+        (d) => d.id == deckId,
+        orElse: () => DeckItem(id: '', name: 'All cards', cards: []),
+      ),
+      orElse: () => DeckItem(id: '', name: 'All cards', cards: []),
     );
+
+
     final totalCards = 
       deckId != "" ? deck.cards.length : ref.watch(collectionProvider).value?.length;
 
@@ -292,7 +297,10 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
               onTap: () async {
                 // Retrieve current decks from the provider
                 final decks = ref.read(decksProvider);
-                if (decks.isEmpty) {
+                if (decks.maybeWhen(
+                  data: (decksList) => decksList.isEmpty,
+                  orElse: () => false,
+                )) {
                   Fluttertoast.showToast(
                     msg: "No decks available. Please create a deck first.",
                     gravity: ToastGravity.CENTER,
@@ -301,22 +309,43 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                   );
                   return;
                 }
+
                 // Show a bottom sheet to select a deck
                 final selectedDeckId = await showModalBottomSheet<String>(
                   context: context,
                   backgroundColor: Colors.grey.shade900,
                   builder: (context) {
-                    return ListView.builder(
-                      itemCount: decks.length,
-                      itemBuilder: (context, index) {
-                        final deck = decks[index];
-                        return ListTile(
-                          title: Text(
-                            deck.name,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context, deck.id);
+                    final decksAsync = ref.watch(decksProvider);
+
+                    return decksAsync.when(
+                      loading: () => const Center(child: CircularProgressIndicator()),
+                      error: (error, _) => Center(child: Text('Error: $error')),
+                      data: (decksList) {
+                        if (decksList.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'No decks available\nCreate one first!',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: decksList.length,
+                          itemBuilder: (context, index) {
+                            final deck = decksList[index];
+                            return ListTile(
+                              title: Text(
+                                deck.name,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              subtitle: Text(
+                                '${deck.cards.length} cards',
+                                style: TextStyle(color: Colors.grey.shade400),
+                              ),
+                              onTap: () => Navigator.pop(context, deck.id),
+                            );
                           },
                         );
                       },
