@@ -107,7 +107,7 @@ class HomePage extends ConsumerWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 3),
                             Text(
                               "New Portfolio User",
                               style: TextStyle(

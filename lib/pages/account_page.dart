@@ -108,14 +108,22 @@ class AccountPage extends ConsumerWidget {
                       color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 2),
                   Text(
-                    currentUser.email!,
+                    "New Portfolio User",
                     style: TextStyle(
+                      color: Colors.grey.shade500,
                       fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey.shade400,
                     ),
                   ),
+                  // Text(
+                  //   currentUser.email!,
+                  //   style: TextStyle(
+                  //     fontSize: 16,
+                  //     fontWeight: FontWeight.w400,
+                  //     color: Colors.grey.shade400,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -225,7 +233,11 @@ class AccountPage extends ConsumerWidget {
             children: [
               Text(
                 "Account Worth",
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade400),
+                style: TextStyle(
+                  fontSize: 14, 
+                  fontWeight: FontWeight.bold,
+                  color: Colors.yellowAccent
+                ),
               ),
               const SizedBox(height: 4),
               Text(
