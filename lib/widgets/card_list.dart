@@ -61,10 +61,13 @@ class CardListItemState extends ConsumerState<CardListItem> {
               widget.selectedCards.add(widget.card);
             } else {
               widget.selectedCards.remove(widget.card);
+              if (widget.selectedCards.isEmpty) {
+                // deactivate select mode
+                widget.callbackFunction();
+              }
             }
           });
           widget.extraCallback();
-          print(widget.selectedCards.length);
         }
       },
       onLongPress: () {

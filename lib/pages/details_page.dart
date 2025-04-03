@@ -92,257 +92,240 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
       ),
       body: SafeArea(
         child: ListView(
-          // shrinkWrap: true,
-          // padding: EdgeInsets.all(15.0),
-          padding: const EdgeInsets.only(bottom: 100),
+          padding: const EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: 100
+          ),
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                // Card Details
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 12),
-                  // Card Image
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.network(
-                      widget.card!['images']['large'],
-                      fit: BoxFit.contain,
-                      height: 400,
-                    ),
+            Column(
+              children: [
+                const SizedBox(height: 12),
+
+                // Card Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    widget.card!['images']['large'],
+                    fit: BoxFit.contain,
+                    height: 400,
                   ),
-                  const SizedBox(height: 24),
-                  // Card Title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // card name
-                        Text(
-                          widget.card!['name'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        // card number in set
-                        Container(
-                          alignment: Alignment.bottomRight,
-                          child: Text(
-                            ' (${widget.card!['number']}/${widget.card!['set']['total']})',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
+                ),
+                const SizedBox(height: 24),
+
+                // card name
+                Text(
+                  widget.card!['name'],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                // card number in set
+                Text(
+                  '${widget.card!['number']}/${widget.card!['set']['total']}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 24),
+
+                // Card Info
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    // Set Info
+                    Flexible(
+                      flex: 3,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Set',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Card Info
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        // Set Info
-                        Flexible(
-                          flex: 3,
-                          child: Column(
-                            children: [
-                              Text(
-                                'Set',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              widget.card!['set']['name'] ?? 'Unknown',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
-                              const SizedBox(height: 2),
-                              FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  widget.card!['set']['name'] ?? 'Unknown',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Rarity Info
-                        Flexible(
-                          flex: 2,
-                          child: Column(
-                            children: [
-                              Text(
-                                'Rarity',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  widget.card!['rarity'] ?? 'Unknown',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Price Info
-                        Flexible(
-                          flex: 1,
-                          child: Column(
-                            children: [
-                              Text(
-                                'Value',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  widget.card!['price'] != "N/A" ? "\$${double.parse(widget.card!['price']).toStringAsFixed(2)}" : "N/A",
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Historical Price Info
-                  Text(
-                    'Historical Value',
-                    style: TextStyle(
-                      color: Colors.grey.shade500,
-                      fontSize: 12,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  PriceChart(),
-                  // tcgplayer url
-                  InkWell(
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'View in TCGplayer ',
-                            style: TextStyle(
-                              color: Colors.teal.shade50,
-                              fontSize: 12,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Icon(Icons.open_in_new, size: 15, color: Colors.teal.shade50)
-                          )
-                        ]
+                        ],
                       ),
                     ),
-                    onTap: () => launchUrl(Uri.parse(widget.card!['tcgplayer'])),
+                    // Rarity Info
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Rarity',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              widget.card!['rarity'] ?? 'Unknown',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Price Info
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Value',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              widget.card!['price'] != "N/A" ? "\$${double.parse(widget.card!['price']).toStringAsFixed(2)}" : "N/A",
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                // Historical Price Info
+                Text(
+                  'Historical Value',
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 12,
                   ),
-                  const SizedBox(height: 12),
-                  // Additional Card Info
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                PriceChart(),
+                // tcgplayer url
+                InkWell(
+                  child: RichText(
+                    text: TextSpan(
                       children: [
-                        // artist info
-                        Flexible(
-                          flex: 1,
-                          child: Column(
-                            children: [
-                              Text(
-                                'Artist',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  widget.card!['artist'] ?? 'Unknown',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+                        TextSpan(
+                          text: 'View in TCGplayer ',
+                          style: TextStyle(
+                            color: Colors.teal.shade50,
+                            fontSize: 12,
                           ),
                         ),
-                        // release date info
-                        Flexible(
-                          flex: 1,
-                          child: Column(
-                            children: [
-                              Text(
-                                'Release Date',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  widget.card!['set']['releasedate'] ?? 'Unknown',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        WidgetSpan(
+                          child: Icon(Icons.open_in_new, size: 15, color: Colors.teal.shade50)
+                        )
+                      ]
                     ),
                   ),
-                ],
-              ),
+                  onTap: () => launchUrl(Uri.parse(widget.card!['tcgplayer'])),
+                ),
+                const SizedBox(height: 12),
+                // Additional Card Info
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    // artist info
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Artist',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              widget.card!['artist'] ?? 'Unknown',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // release date info
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Release Date',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              widget.card!['set']['releasedate'] ?? 'Unknown',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -350,7 +333,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
       // Floating Action Button: SpeedDial with options
       floatingActionButton: SpeedDial(
         label:
-            _cardExists ? const Text('In Collection (1)') : const Text('Options'),
+            _cardExists ? const Text('In Collection') : const Text('Options'),
         backgroundColor: Colors.grey.shade900,
         foregroundColor: 
             _cardExists ? Colors.teal.shade50 : Colors.teal.shade200,
@@ -370,7 +353,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             child: const Icon(Icons.visibility_outlined),
             backgroundColor: Colors.grey.shade900,
             foregroundColor: Colors.blue.shade300,
-            label: 'Add to Watchlist',
+            label: 'Add to watchlist',
             onTap: () {
               ref
                   .read(watchlistProvider.notifier)
@@ -399,7 +382,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
               child: const Icon(Icons.add),
               backgroundColor: Colors.grey.shade900,
               foregroundColor: Colors.teal.shade200,
-              label: 'Add to Collection',
+              label: 'Add to collection',
               onTap: () async {
                 final collectionService = ref.read(collectionServiceProvider);
                 await collectionService.addCard(widget.card!);
@@ -429,7 +412,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
               child: const Icon(Icons.playlist_add),
               backgroundColor: Colors.grey.shade900,
               foregroundColor: Colors.teal.shade200,
-              label: 'Add to Deck',
+              label: 'Add to a deck',
               onTap: () async {
                 // Retrieve current decks from the provider
                 final decks = ref.read(decksProvider);
@@ -475,87 +458,6 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                     textColor: Colors.teal.shade50,
                   );
                 }
-              },
-            ),
-
-          // Add multiple of the same card (if in collection)
-          if (_cardExists)
-            SpeedDialChild(
-              child: const Icon(Icons.add_circle_outline),
-              backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.green.shade300,
-              label: 'Edit Quantity',
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      backgroundColor: Colors.transparent,
-                      child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade900,
-                          borderRadius: BorderRadius.circular(16.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.4),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              "Edit Quantity",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                              overflow:
-                                  TextOverflow
-                                      .ellipsis, // Prevents long names from breaking layout
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                IconButton.filled(
-                                  onPressed: () {
-
-                                  },
-                                  icon: const Icon(Icons.remove),
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: Colors.grey.shade800,
-                                    foregroundColor: Colors.white
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20.0,
-                                  child: TextField(),
-                                ),
-                                IconButton.filled(
-                                  onPressed: () {
-
-                                  },
-                                  icon: const Icon(Icons.add),
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: Colors.grey.shade800,
-                                    foregroundColor: Colors.white
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                );
               },
             ),
 

@@ -314,7 +314,11 @@ class SearchPageState extends ConsumerState<SearchPage> {
                       childAspectRatio: 0.55, // Adjusted aspect ratio
                     ),
                     itemCount: _cards.length,
-                    itemBuilder: (context, index) => CardGridItem(card: _cards[index]),
+                    itemBuilder: (context, index) { 
+                      return CardGridItem(key: ValueKey(index), index: index, card: _cards[index],
+                        callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards,
+                          extraCallback: refresh);
+                    }
                   )
                 : ListView.builder(
                     itemCount: _cards.length,
@@ -365,7 +369,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
               child: const Icon(Icons.add),
               backgroundColor: Colors.grey.shade900,
               foregroundColor: Colors.teal.shade200,
-              label: 'Add to Collection',
+              label: 'Add card(s) to collection',
               onTap: () async {
                 final collectionService = ref.read(collectionServiceProvider);
                 for (final card in _selectedCards) {
