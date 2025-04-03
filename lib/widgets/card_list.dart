@@ -1,85 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:holo/pages/collections_page.dart';
 import '../services/auth_service.dart';
 import 'package:holo/pages/details_page.dart';
 
-class CardListItem extends ConsumerWidget {
-  final Map<String, dynamic> card;
+class CardListItem extends ConsumerStatefulWidget {
+  const CardListItem({super.key, required this.index, required this.card, required this.callbackFunction, required this.selectMode, required this.selectedCards, required this.extraCallback});
 
-  const CardListItem({
-    super.key,
-    required this.card,
-  });
+  final int index;
+  final Map<String, dynamic> card;
+  final Function callbackFunction;
+  final bool selectMode;
+  final List<Map<String, dynamic>> selectedCards;
+  final Function extraCallback;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  CardListItemState createState() => CardListItemState();
+}
+
+class CardListItemState extends ConsumerState<CardListItem> {
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,
       ),
-      leading: Image.network(card['images']['small'], width: 50, height: 50),
+      leading: Image.network(widget.card['images']['small'], width: 50, height: 50),
       title: Text(
-        card['name'],
+        widget.card['name'],
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w500,
         ),
       ),
       subtitle: Text(
-        '${card['set']['name'] ?? 'Unknown'} • ${card['rarity'] ?? 'Unknown'}',
+        '${widget.card['set']['name'] ?? 'Unknown'} • ${widget.card['rarity'] ?? 'Unknown'}',
         style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
       ),
       trailing: Text(
-        card['price'] != "N/A" ? "\$${double.parse(card['price']).toStringAsFixed(2)}" : "N/A",
+        widget.card['price'] != "N/A" ? "\$${double.parse(widget.card['price']).toStringAsFixed(2)}" : "N/A",
         style: const TextStyle(
           color: Colors.green,
           fontSize: 16,
           fontWeight: FontWeight.bold
         ),
       ),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetailsPage(card: card),
-        ),
-      ),
-    );
-  }
-
-    Widget _buildCollectionCard(BuildContext context, Map<String, dynamic> card) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12.0),
-        leading: Image.network(card['images']['small'], width: 60, height: 60),
-        title: Text(
-          card['name'],
-          style: const TextStyle(color: Colors.white),
-        ),
-        subtitle: Text(
-          card['set']['name'],
-          style: TextStyle(color: Colors.grey.shade500),
-        ),
-        trailing: Text(
-          '\$${card['price']}',
-          style: const TextStyle(
-            color: Colors.green,
-            fontSize: 16,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailsPage(card: card)
-          ),
-        ),
-      ),
+      onTap: () {
+        if (!widget.selectMode) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailsPage(card: widget.card),
+            ),
+          );
+        } else {
+          setState(() {
+            // add card to selection
+            if (!widget.selectedCards.contains(widget.card)) {
+              widget.selectedCards.add(widget.card);
+            } else {
+              widget.selectedCards.remove(widget.card);
+            }
+          });
+          widget.extraCallback();
+          print(widget.selectedCards.length);
+        }
+      },
+      onLongPress: () {
+        if (!widget.selectMode) {
+          // activate select mode
+          widget.callbackFunction();
+          // add card to selection
+          widget.selectedCards.add(widget.card);
+          widget.extraCallback();
+        }
+      },
+      selected: widget.selectedCards.contains(widget.card),
+      selectedTileColor: Colors.grey.shade900,
     );
   }
 }

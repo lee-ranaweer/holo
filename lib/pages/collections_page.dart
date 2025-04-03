@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:go_router/go_router.dart';
 import 'package:holo/pages/decks_page.dart';
 import 'package:holo/pages/details_page.dart';
@@ -18,6 +19,23 @@ class CollectionsPage extends ConsumerStatefulWidget {
 
 class CollectionsPageState extends ConsumerState<CollectionsPage> {
   bool _gridMode = false;
+  bool _selectMode = false;
+  List<Map<String, dynamic>> _selectedCards = [];
+
+  void toggleSelectMode() {
+    setState(() {
+      _selectMode = !_selectMode;
+      if (!_selectMode) {
+        // clear selection
+        _selectedCards.clear();
+      }
+    });
+  }
+
+  void refresh() {
+    print('test');
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,118 +53,121 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
     final totalCards = 
       deckId != "" ? deck.cards.length : ref.watch(collectionProvider).value?.length;
 
-
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        centerTitle: false,
+        title: 
+        !_selectMode
+        ? const Text(
+            'My Collection',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+            ),
+          )
+        : Text(
+            "${_selectedCards.length} selected",
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: 
+            !_selectMode
+            // Decks Button (matches height and holo style)
+            ? TextButton(
+                onPressed: () {
+                  context.push('/decks');
+                },
+                child: Text(
+                  'Decks',
+                  style: TextStyle(
+                    color: Colors.teal.shade200, // Holo color match
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            // cancel if in selection mode
+            : IconButton(
+                onPressed: () {
+                  toggleSelectMode();
+                },
+                icon: const Icon(Icons.close, size: 20),
+              ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
+              color: Colors.black,
+              child: Column(
                 children: [
-                  Text(
-                    "My Collection",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Spacer(),
-                  // Decks Button (matches height and holo style)
-                  SizedBox(
-                    height: 34,
-                    child: TextButton(
-                      onPressed: () {
-                        context.push('/decks');
-                      },
-                      style: TextButton.styleFrom(
-                        // backgroundColor: Colors.grey.shade900,
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          // side: BorderSide(
-                          //   color: Colors.grey.shade800,
-                          //   width: 1,
-                          // ),
-                        ),
-                      ),
-                      child: Text(
-                        'Decks',
-                        style: TextStyle(
-                          color: Colors.teal.shade200, // Holo color match
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Search, filter, and view mode
-            // CollectionsPage snippet
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
-              child: Row(
-                children: [
-                  // Search Bar (shrink a little to make room for Decks button)
-                  Expanded(
-                    flex: 3,
-                    child: SizedBox(
-                      height: 40, // Set consistent height
-                      child: TextField(
-                        style: const TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
-                        onSubmitted: (value) {
-                          ref.read(searchQueryProvider.notifier).state = value;
-                        },
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade900,
-                          hintText: 'Search your collection...',
-                          hintStyle: TextStyle(color: Colors.grey.shade600),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0.0,
-                            horizontal: 16.0,
+                  // Search, filter, and view mode
+                  // CollectionsPage snippet
+                  Row(
+                    children: [
+                      // Search Bar
+                      Expanded(
+                        flex: 3,
+                        child: SizedBox(
+                          height: 40, // Set consistent height
+                          child: TextField(
+                            style: const TextStyle(color: Colors.white),
+                            cursorColor: Colors.white,
+                            onSubmitted: (value) {
+                              ref.read(searchQueryProvider.notifier).state = value;
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade900,
+                              hintText: 'Search your collection...',
+                              hintStyle: TextStyle(color: Colors.grey.shade600),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0.0,
+                                horizontal: 16.0,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  // const SizedBox(width: 8),
-                  const SizedBox(width: 8),
+                      const SizedBox(width: 8),
 
-                  // Filter icon
-                  IconButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CollectionFilter();
+                      // Filter icon
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return CollectionFilter();
+                            },
+                          );
                         },
-                      );
-                    },
-                    icon: const Icon(Icons.filter_alt_outlined, size: 20),
-                    style: TextButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                  ),
+                        icon: const Icon(Icons.filter_alt_outlined, size: 20),
+                        style: TextButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
 
-                  // List/Grid icon
-                  _gridMode
+                      // List/Grid icon
+                      _gridMode
                       ? IconButton(
                         onPressed: () {
                           setState(() {
@@ -171,48 +192,48 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // current deck and qty
+                  Row(
+                    children: [
+                      Text(
+                        'Showing: ${deck.name} ($totalCards)',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      if (deckId != "")
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              ref.read(decksProvider.notifier).curDeck = "";
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 4),
+                            child: const Icon(Icons.close, size: 16),
+                          )
+                        ),
+                    ],
+                  ),
+
+                  // Divider for separation
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Divider(color: Colors.grey.shade800, thickness: 1),
+                  ),
                 ],
               ),
             ),
 
-            // current deck and qty
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Showing: ${deck.name} ($totalCards)',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  if (deckId != "")
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          ref.read(decksProvider.notifier).curDeck = "";
-                        });
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 4),
-                        child: const Icon(Icons.close, size: 16),
-                      )
-                    ),
-                ],
-              )
-            ),
-
-            // Divider for separation
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Divider(color: Colors.grey.shade800, thickness: 1),
-            ),
-
             // Card collection
             Expanded(
-              // fix this later
+              // TODO: fix filtering and search
               // child: filteredCollectionAsync.when(
               //   loading: () => const Center(child: CircularProgressIndicator()),
               //   error: (error, _) => Center(child: Text('Error: $error')),
@@ -229,23 +250,43 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
         ),
       ),
       // Add new card to collection
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.go('/search');
-        },
-        label: const Text('New Card'),
-        backgroundColor: Colors.grey.shade900,
-        foregroundColor: Colors.teal.shade200,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.grey.shade800,
-            width: 1,
-            style: BorderStyle.solid,
+      floatingActionButton: 
+      !_selectMode 
+      ? FloatingActionButton.extended(
+          onPressed: () {
+            context.go('/search');
+          },
+          label: const Text('New Card'),
+          backgroundColor: Colors.grey.shade900,
+          foregroundColor: Colors.teal.shade200,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.grey.shade800,
+              width: 1,
+              style: BorderStyle.solid,
+            ),
+            borderRadius: BorderRadius.circular(12.0),
           ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        icon: Icon(Icons.add),
-      ),
+          icon: Icon(Icons.add),
+        )
+      : SpeedDial(
+          label: const Text('Options'),
+          backgroundColor: Colors.grey.shade900,
+          foregroundColor: Colors.teal.shade200,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.grey.shade800,
+              width: 1,
+              style: BorderStyle.solid
+            ),
+            borderRadius: BorderRadius.circular(28.0),
+          ),
+          overlayOpacity: 0,
+          icon: Icons.add,
+          children: [
+
+          ],
+        )
     );
   }
 
@@ -272,8 +313,11 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
         : ListView.builder(
           itemCount: cards.length,
           itemBuilder: (context, index) {
-            return CardListItem(card: cards[index]);
+            return CardListItem(key: ValueKey(index), index: index, card: cards[index], 
+              callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards, 
+                extraCallback: refresh);
           },
         );
   }
 }
+

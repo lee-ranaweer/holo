@@ -14,7 +14,7 @@ import '../providers/notifications_provider.dart'; // New import
 import '../providers/decks_provider.dart'; // Import decksProvider
 
 class DetailsPage extends ConsumerStatefulWidget {
-  const DetailsPage({super.key, this.card});
+  const DetailsPage({super.key, required this.card});
 
   final Map<String, dynamic>? card;
 

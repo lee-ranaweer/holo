@@ -34,11 +34,14 @@ class AccountPage extends ConsumerWidget {
               foregroundColor: Colors.white,
               visualDensity: VisualDensity.compact,
             ),
-            child: Text(
-              'Sign Out',
-              style: TextStyle(
-                color: Colors.teal.shade50,
-                fontSize: 14,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Sign Out',
+                style: TextStyle(
+                  color: Colors.teal.shade50,
+                  fontSize: 14,
+                ),
               ),
             ),
           ),

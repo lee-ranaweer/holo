@@ -18,7 +18,21 @@ class _SearchPageState extends State<SearchPage> {
   var _setFilter, _rarFilter;
   String _errorMessage = '';
   bool _gridMode = false;
+  bool _selectMode = false;
+  List<Map<String, dynamic>> _selectedCards = [];
   int _cardqty = 0;
+
+  void toggleSelectMode() {
+    setState(() {
+      if (!_selectMode) {
+        _selectMode = true;
+      }
+    });
+  }
+
+  void refresh() {
+    setState(() {});
+  }
 
   Future<void> _searchCards(String query) async {
     if (query.isEmpty) return;
@@ -125,9 +139,10 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             // Search, filter, and view mode
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                bottom: 12.0
               ),
               child: Row(
                 children: [
@@ -277,7 +292,9 @@ class _SearchPageState extends State<SearchPage> {
                   ListView.builder(
                     itemCount: _cards.length,
                     itemBuilder: (context, index) {
-                      return CardListItem(card: _cards[index]);
+                      return CardListItem(index: index, card: _cards[index], 
+                        callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards,
+                          extraCallback: refresh);
                     }
                   )
               :
