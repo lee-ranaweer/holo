@@ -39,8 +39,9 @@ class AccountPage extends ConsumerWidget {
               child: Text(
                 'Sign Out',
                 style: TextStyle(
-                  color: Colors.teal.shade50,
+                  color: Colors.deepPurple.shade100,
                   fontSize: 14,
+                  fontWeight: FontWeight.bold
                 ),
               ),
             ),

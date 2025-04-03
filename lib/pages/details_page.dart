@@ -35,9 +35,11 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
   _getCardExists() async {
     final collectionService = ref.read(collectionServiceProvider);
     bool cardExists = await collectionService.checkCard(widget.card!['id']);
-    setState(() {
-      _cardExists = cardExists;
-    });
+    if (mounted) {
+      setState(() {
+        _cardExists = cardExists;
+      });
+    }
   }
 
   _testScrape() async {
@@ -217,7 +219,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                             child: Text(
                               widget.card!['price'] != "N/A" ? "\$${double.parse(widget.card!['price']).toStringAsFixed(2)}" : "N/A",
                               style: TextStyle(
-                                color: Colors.green,
+                                color: Colors.greenAccent,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -248,12 +250,12 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
                         TextSpan(
                           text: 'View in TCGplayer ',
                           style: TextStyle(
-                            color: Colors.teal.shade50,
+                            color: Colors.cyan.shade100,
                             fontSize: 12,
                           ),
                         ),
                         WidgetSpan(
-                          child: Icon(Icons.open_in_new, size: 15, color: Colors.teal.shade50)
+                          child: Icon(Icons.open_in_new, size: 15, color: Colors.cyan.shade100)
                         )
                       ]
                     ),
@@ -336,7 +338,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             _cardExists ? const Text('In Collection') : const Text('Options'),
         backgroundColor: Colors.grey.shade900,
         foregroundColor: 
-            _cardExists ? Colors.teal.shade50 : Colors.teal.shade200,
+            _cardExists ? Colors.tealAccent.shade100 : Colors.tealAccent,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: Colors.grey.shade800,
@@ -352,7 +354,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
           SpeedDialChild(
             child: const Icon(Icons.visibility_outlined),
             backgroundColor: Colors.grey.shade900,
-            foregroundColor: Colors.blue.shade300,
+            foregroundColor: Colors.lightBlueAccent,
             label: 'Add to watchlist',
             onTap: () {
               ref
@@ -381,7 +383,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             SpeedDialChild(
               child: const Icon(Icons.add),
               backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.teal.shade200,
+              foregroundColor: Colors.greenAccent.shade400,
               label: 'Add to collection',
               onTap: () async {
                 final collectionService = ref.read(collectionServiceProvider);
@@ -411,7 +413,7 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             SpeedDialChild(
               child: const Icon(Icons.playlist_add),
               backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.teal.shade200,
+              foregroundColor: Colors.amberAccent,
               label: 'Add to a deck',
               onTap: () async {
                 // Retrieve current decks from the provider
@@ -466,10 +468,9 @@ class DetailsPageState extends ConsumerState<DetailsPage> {
             SpeedDialChild(
               child: const Icon(Icons.delete_outline),
               backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.red.shade600,
+              foregroundColor: Colors.deepOrange,
               label: 'Remove from collection',
-              onTap:
-                  () => showDialog(
+              onTap: () => showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(

@@ -88,8 +88,8 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                 child: Text(
                   'Decks',
                   style: TextStyle(
-                    color: Colors.teal.shade200, // Holo color match
-                    fontWeight: FontWeight.w600,
+                    color: Colors.amberAccent, // Holo color match
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               )
@@ -254,7 +254,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
           },
           label: const Text('New Card'),
           backgroundColor: Colors.grey.shade900,
-          foregroundColor: Colors.teal.shade200,
+          foregroundColor: Colors.cyanAccent,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               color: Colors.grey.shade800,
@@ -271,7 +271,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
       : SpeedDial(
           label: const Text('Options'),
           backgroundColor: Colors.grey.shade900,
-          foregroundColor: Colors.teal.shade200,
+          foregroundColor: Colors.tealAccent,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               color: Colors.grey.shade800,
@@ -287,7 +287,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
             SpeedDialChild(
               child: const Icon(Icons.playlist_add),
               backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.teal.shade200,
+              foregroundColor: Colors.amberAccent,
               label: 'Add card(s) to a deck',
               onTap: () async {
                 // Retrieve current decks from the provider
@@ -344,7 +344,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
             SpeedDialChild(
               child: const Icon(Icons.delete_outline),
               backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.red.shade600,
+              foregroundColor: Colors.deepOrange,
               label: 'Remove card(s) from collection',
               onTap:
                   () => showDialog(
@@ -421,7 +421,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
             ),
             itemCount: cards.length,
             itemBuilder: (context, index) { 
-              return CardGridItem(key: ValueKey(index), index: index, card: cards[index],
+              return CardGridItem(index: index, card: cards[index],
                 callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards,
                   extraCallback: refresh);
             }
@@ -429,7 +429,7 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
         : ListView.builder(
             itemCount: cards.length,
             itemBuilder: (context, index) {
-              return CardListItem(key: ValueKey(index), index: index, card: cards[index], 
+              return CardListItem(index: index, card: cards[index], 
                 callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards, 
                   extraCallback: refresh);
             },

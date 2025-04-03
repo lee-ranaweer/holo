@@ -29,7 +29,11 @@ class HomePage extends ConsumerWidget {
               // Portfolio Balance Section
               Text(
                 "Portfolio balance",
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                style: TextStyle(
+                  fontSize: 14, 
+                  fontWeight: FontWeight.bold,
+                  color: Colors.limeAccent.shade400
+                ),
               ),
               const SizedBox(height: 4),
               Row(
@@ -47,7 +51,7 @@ class HomePage extends ConsumerWidget {
                   Text(
                     "+220.4",
                     style: const TextStyle(
-                      color: Colors.green,
+                      color: Colors.greenAccent,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),

@@ -315,7 +315,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
                     ),
                     itemCount: _cards.length,
                     itemBuilder: (context, index) { 
-                      return CardGridItem(key: ValueKey(index), index: index, card: _cards[index],
+                      return CardGridItem(index: index, card: _cards[index],
                         callbackFunction: toggleSelectMode, selectMode: _selectMode, selectedCards: _selectedCards,
                           extraCallback: refresh);
                     }
@@ -353,7 +353,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
       : SpeedDial(
           label: const Text('Options'),
           backgroundColor: Colors.grey.shade900,
-          foregroundColor: Colors.teal.shade200,
+          foregroundColor: Colors.tealAccent,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               color: Colors.grey.shade800,
@@ -368,7 +368,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
             SpeedDialChild(
               child: const Icon(Icons.add),
               backgroundColor: Colors.grey.shade900,
-              foregroundColor: Colors.teal.shade200,
+              foregroundColor: Colors.greenAccent.shade400,
               label: 'Add card(s) to collection',
               onTap: () async {
                 final collectionService = ref.read(collectionServiceProvider);
@@ -381,7 +381,7 @@ class SearchPageState extends ConsumerState<SearchPage> {
                     NotificationItem(
                       title: "Card Added",
                       subtitle:
-                          "$card was added to your collection",
+                          "${card['name']} was added to your collection",
                       time: DateTime.now(),
                     ),
                   );

@@ -41,9 +41,9 @@ class CardListItemState extends ConsumerState<CardListItem> {
       trailing: Text(
         widget.card['price'] != "N/A" ? "\$${double.parse(widget.card['price']).toStringAsFixed(2)}" : "N/A",
         style: const TextStyle(
-          color: Colors.green,
+          color: Colors.greenAccent,
           fontSize: 16,
-          fontWeight: FontWeight.bold
+          fontWeight: FontWeight.w600
         ),
       ),
       onTap: () {
