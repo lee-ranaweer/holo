@@ -66,15 +66,15 @@ class CollectionFilter extends ConsumerWidget {
                     value: tempSelection.contains(rarity),
                     activeColor: Colors.green,
                     checkColor: Colors.white,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        if (value == true) {
-                          tempSelection.add(rarity);
-                        } else {
-                          tempSelection.remove(rarity);
-                        }
-                      });
-                    },
+onChanged: (bool? value) {
+  setState(() {
+    if (value == true) {
+      tempSelection.add(rarity);
+    } else {
+      tempSelection.remove(rarity);
+    }
+  });
+},
                   );
                 }),
                 const SizedBox(height: 16),

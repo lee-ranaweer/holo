@@ -62,10 +62,19 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
       : ref.watch(collectionProvider).value ?? [];
 
     final query = ref.watch(searchQueryProvider).toLowerCase().trim();
-  final filteredCards = allCards.where((card) {
-    return query.isEmpty ||
-        card['name'].toLowerCase().contains(query);
-  }).toList();
+final selectedRarities = ref.watch(selectedRaritiesProvider);
+final filteredCards = allCards.where((card) {
+  final nameMatch = query.isEmpty || 
+      card['name'].toLowerCase().contains(query);
+  
+  final cardRarity = card['rarity']?.toString() ?? 'Unknown'; // Handle null case
+  final rarityMatch = selectedRarities.isEmpty ||
+      selectedRarities.contains(cardRarity);
+
+  return nameMatch && rarityMatch;
+}).toList();
+
+
 
   final totalCards = filteredCards.length;
 
@@ -215,13 +224,14 @@ class CollectionsPageState extends ConsumerState<CollectionsPage> {
                   Row(
                     children: [
                       Text(
-                        'Showing: ${deck.name} ($totalCards)',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade500,
-                        ),
-                      ),
+  'Showing: ${deck.name} (${selectedRarities.isEmpty ? 'All rarities' : selectedRarities.join(', ')}) • $totalCards',
+  style: TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Colors.grey.shade500,
+  ),
+),
+
                       if (deckId != "")
                         GestureDetector(
                           onTap: () {
