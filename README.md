@@ -1,15 +1,13 @@
+#### Holo:
 
-# Holo
-
-A mobile app designed as a personal portfolio manager for collectors of the Pokémon Trading Card Game. Built using Flutter.
+A cross-platform mobile app for managing your personal Pokémon TCG collection. It uses the Pokémon TCG API to deliver real-time market prices, card rarities, and set details. Features include custom deck building, wishlists, advanced filtering, and portfolio value tracking.
 
 Created Nelith Ranaweera, Justin Parisio, and Gavin Eugenio
 
-## Installation
+### How to run:
+
 Follow the guide to install Flutter for your OS: https://docs.flutter.dev/get-started/install
 
-
-## Usage
 1. Clone the repository
 ```
 git clone https://gitlab.socs.uoguelph.ca/w25-4030-section-01/group_09/holo.git
