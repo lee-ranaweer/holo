@@ -1,4 +1,4 @@
-#### Holo:
+### Holo:
 
 A cross-platform mobile app for managing your personal Pokémon TCG collection. It uses the Pokémon TCG API to deliver real-time market prices, card rarities, and set details. Features include custom deck building, wishlists, advanced filtering, and portfolio value tracking.
 
